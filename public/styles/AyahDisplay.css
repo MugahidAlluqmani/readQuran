@@ -1,0 +1,612 @@
+/* AyahDisplay.css */
+.ayah-display {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .app.dark-mode .ayah-display {
+    background: #2d2d2d;
+    border-color: #404040;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* تأثير الزاوية المزخرفة */
+  .ayah-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    border-radius: 0 0 100% 0;
+    opacity: 0.1;
+  }
+  
+  .app.dark-mode .ayah-display::before {
+    background: linear-gradient(135deg, #64b5f6, #1976d2);
+    opacity: 0.15;
+  }
+  
+  /* رأس الآية */
+  .ayah-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .app.dark-mode .ayah-header {
+    border-bottom-color: #404040;
+  }
+  
+  .surah-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .surah-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #0d47a1, #1976d2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding: 5px 0;
+  }
+  
+  .app.dark-mode .surah-name {
+    background: linear-gradient(135deg, #64b5f6, #2196f3);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .ayah-number {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #bbdefb;
+  }
+  
+  .app.dark-mode .ayah-number {
+    background: #1e3a5f;
+    color: #90caf9;
+    border-color: #0d47a1;
+  }
+  
+  .ayah-number::before {
+    content: '🕌';
+    font-size: 1rem;
+  }
+  
+  .page-info {
+    display: flex;
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 10px 20px;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+  }
+  
+  .app.dark-mode .page-info {
+    background: #3d3d3d;
+    border-color: #505050;
+  }
+  
+  .page, .juz {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .app.dark-mode .page,
+  .app.dark-mode .juz {
+    color: #ccc;
+  }
+  
+  .page::before {
+    content: '📄';
+    font-size: 0.9rem;
+  }
+  
+  .juz::before {
+    content: '📖';
+    font-size: 0.9rem;
+  }
+  
+  /* النص العربي */
+  .arabic-text {
+    text-align: right;
+    padding: 30px 20px;
+    margin: 20px 0;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    border: 2px solid #e3e3e3;
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'HafsSmart';
+
+  }
+  
+  .app.dark-mode .arabic-text {
+    background: linear-gradient(135deg, #3d3d3d, #2d2d2d);
+    border-color: #505050;
+  }
+  
+  .arabic-text h2 {
+    font-size: 2.8rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    font-weight: 600;
+    font-family: 'HafsSmart';
+    text-align: right;
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: keep-all;
+    padding: 0 10px;
+  }
+  
+  .app.dark-mode .arabic-text h2 {
+    color: #ffffff;
+  }
+  
+  /* تأثيرات خاصة للنص العربي */
+  .arabic-text::before,
+  .arabic-text::after {
+    content: '﷽';
+    position: absolute;
+    font-size: 2rem;
+    color: rgba(25, 118, 210, 0.1);
+    font-family: 'HafsSmart';
+
+  }
+  
+  .arabic-text::before {
+    top: 10px;
+    left: 15px;
+    transform: rotate(-15deg);
+  }
+  
+  .arabic-text::after {
+    bottom: 10px;
+    right: 15px;
+    transform: rotate(15deg);
+  }
+  
+  .app.dark-mode .arabic-text::before,
+  .app.dark-mode .arabic-text::after {
+    color: rgba(100, 181, 246, 0.1);
+  }
+  
+  /* النص الإملائي */
+  .emlaey-text {
+    text-align: center;
+    padding: 25px;
+    margin: 20px 0;
+    background: #fff9e6;
+    border-radius: 15px;
+    border: 2px solid #ffeaa7;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+  
+  .app.dark-mode .emlaey-text {
+    background: #332e1e;
+    border-color: #555033;
+  }
+  
+  .emlaey-text::before {
+    content: '🔤';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    opacity: 0.3;
+  }
+  
+  .emlaey-text p {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: #d35400;
+    font-weight: 500;
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+    font-family: 'Amiri', 'Scheherazade', serif;
+  }
+  
+  .app.dark-mode .emlaey-text p {
+    color: #ffb74d;
+  }
+  
+  /* الترجمة */
+  .translation {
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 15px;
+    border: 2px solid #81c784;
+    position: relative;
+    display: none;
+  }
+  
+  .app.dark-mode .translation {
+    background: linear-gradient(135deg, #1e3320, #2d422e);
+    border-color: #388e3c;
+  }
+  
+  .translation::before {
+    content: '🌍';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.2rem;
+    opacity: 0.5;
+  }
+  
+  .translation h3 {
+    color: #2e7d32;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .app.dark-mode .translation h3 {
+    color: #66bb6a;
+  }
+  
+  .translation h3::before {
+    content: '🔤';
+    font-size: 1.1rem;
+  }
+  
+  .translation p {
+    font-size: 1.3rem;
+    color: #1b5e20;
+    line-height: 1.6;
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
+  
+  .app.dark-mode .translation p {
+    color: #a5d6a7;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* معلومات إضافية */
+  .ayah-info-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .app.dark-mode .ayah-info-footer {
+    border-top-color: #404040;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    font-size: 0.9rem;
+    color: #555;
+    transition: all 0.3s;
+  }
+  
+  .app.dark-mode .info-item {
+    background: #3d3d3d;
+    border-color: #505050;
+    color: #ccc;
+  }
+  
+  .info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-icon {
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+  
+  /* مؤشر التقدم */
+  .ayah-position {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-radius: 15px;
+    border: 2px solid #90caf9;
+  }
+  
+  .app.dark-mode .ayah-position {
+    background: linear-gradient(135deg, #1e3a5f, #0d47a1);
+    border-color: #1976d2;
+  }
+  
+  .position-text {
+    font-weight: 600;
+    color: #1565c0;
+    font-size: 1rem;
+  }
+  
+  .app.dark-mode .position-text {
+    color: #90caf9;
+  }
+  
+  .position-numbers {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .current-position {
+    color: #0d47a1;
+    min-width: 30px;
+    text-align: center;
+  }
+  
+  .app.dark-mode .current-position {
+    color: #64b5f6;
+  }
+  
+  .position-separator {
+    color: #90caf9;
+    opacity: 0.7;
+  }
+  
+  .total-position {
+    color: #1976d2;
+    min-width: 30px;
+    text-align: center;
+  }
+  
+  .app.dark-mode .total-position {
+    color: #90caf9;
+  }
+  
+  /* تحسينات للشاشات الصغيرة */
+  @media (max-width: 768px) {
+    .ayah-display {
+      padding: 20px 15px;
+      border-radius: 15px;
+    }
+    
+    .ayah-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
+    }
+    
+    .surah-info {
+      justify-content: space-between;
+    }
+    
+    .page-info {
+      justify-content: center;
+    }
+    
+    .arabic-text {
+      padding: 20px 15px;
+    }
+    
+    .arabic-text h2 {
+      font-size: 2.2rem;
+      line-height: 1.6;
+    }
+    
+    .emlaey-text {
+      padding: 20px 15px;
+    }
+    
+    .emlaey-text p {
+      font-size: 1.5rem;
+    }
+    
+    .translation {
+      padding: 15px;
+    }
+    
+    .translation p {
+      font-size: 1.1rem;
+    }
+    
+    .ayah-info-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .info-item {
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .arabic-text h2 {
+      font-size: 1.8rem;
+      line-height: 1.5;
+    }
+    
+    .emlaey-text p {
+      font-size: 1.3rem;
+    }
+    
+    .surah-name {
+      font-size: 1.3rem;
+    }
+    
+    .ayah-number {
+      padding: 6px 15px;
+      font-size: 1rem;
+    }
+    
+    .page, .juz {
+      font-size: 0.85rem;
+    }
+  }
+  
+  /* تأثيرات الحركة */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .ayah-display {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* تأثيرات خاصة للآيات */
+  .highlight-ayah {
+    position: relative;
+    animation: pulseHighlight 2s ease-in-out;
+  }
+  
+  @keyframes pulseHighlight {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(255, 235, 59, 0.2);
+    }
+  }
+  
+  /* زر النسخ */
+  .copy-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(25, 118, 210, 0.1);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #1976d2;
+    transition: all 0.3s;
+    z-index: 1;
+  }
+  
+  .app.dark-mode .copy-btn {
+    background: rgba(100, 181, 246, 0.1);
+    color: #64b5f6;
+  }
+  
+  .copy-btn:hover {
+    background: rgba(25, 118, 210, 0.2);
+    transform: scale(1.1);
+  }
+  
+  .app.dark-mode .copy-btn:hover {
+    background: rgba(100, 181, 246, 0.2);
+  }
+  
+  .copy-btn.copied {
+    background: #4caf50;
+    color: white;
+    animation: bounce 0.5s;
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+  
+  /* أيقونات التجويد */
+  .tajweed-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(233, 30, 99, 0.1);
+    color: #e91e63;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .app.dark-mode .tajweed-indicator {
+    background: rgba(233, 30, 99, 0.2);
+    color: #f48fb1;
+  }
+  
+  /* شارة خاصة للآيات المميزة */
+  .special-ayah-badge {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(245, 124, 0, 0.3);
+    z-index: 2;
+  }
+  
+  .app.dark-mode .special-ayah-badge {
+    background: linear-gradient(135deg, #ff9800, #ef6c00);
+  }

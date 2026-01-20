@@ -1,0 +1,302 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+  }
+  
+  body {
+    background-color: #f5f5f5;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+  
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .app.dark-mode {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  
+  /* الهيدر */
+  .app-header {
+    background: linear-gradient(135deg, #0d47a1, #1976d2);
+    color: white;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    display: none;
+  }
+  
+  .app-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .search-result-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .surah-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .range-info {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+  
+  .show-all-btn {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .show-all-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+  
+  /* المحتوى الرئيسي */
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    padding-bottom: 80px; /* مساحة للـ Navigation Bar */
+    overflow-y: auto;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  /* عناصر التحكم بالتنقل */
+  .navigation-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .app.dark-mode .navigation-controls {
+    background: #2d2d2d;
+  }
+  
+  .nav-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .prev-btn {
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    color: #333;
+  }
+  
+  .next-btn {
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: white;
+  }
+  
+  .nav-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .ayah-counter {
+    background: #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #1976d2;
+  }
+  
+  .app.dark-mode .ayah-counter {
+    background: #3d3d3d;
+    color: #64b5f6;
+  }
+  
+  /* حالة التحميل */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    gap: 20px;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1976d2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .app-header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .navigation-controls {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .nav-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .ayah-counter {
+      order: -1;
+    }
+    
+    .main-content {
+      padding: 15px;
+      padding-bottom: 90px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .app-header {
+      padding: 12px 15px;
+    }
+    
+    .search-result-info {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+    
+    .navigation-controls {
+      padding: 12px;
+    }
+  }
+  /* إضافة هذه التنسيقات لـ main.css */
+
+/* تنسيقات لعرض النتائج */
+.search-result-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px 20px;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.view-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.view-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.view-btn.active {
+  background: white;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+/* زر عرض الكل في شريط التنقل */
+.show-full-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.show-full-btn:hover {
+  background: #1565c0;
+  transform: translateY(-2px);
+}
+
+/* تحسينات للعرض المتجاوب */
+@media (max-width: 768px) {
+  .search-result-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .view-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+}
