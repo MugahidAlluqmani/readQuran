@@ -12,6 +12,22 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
   const sheetRef = useRef(null);
   const overlayRef = useRef(null);
 
+  // قائمة السور المختصرة (الأكثر قراءة)
+  const popularSurahs = [
+    { number: 1, name: 'الفاتحة' },
+    { number: 2, name: 'البقرة' },
+    { number: 3, name: 'آل عمران' },
+    { number: 36, name: 'يس' },
+    { number: 18, name: 'الكهف' },
+    { number: 67, name: 'الملك' },
+    { number: 55, name: 'الرحمن' },
+    { number: 56, name: 'الواقعة' },
+    { number: 9, name: 'التوبة' },
+    { number: 112, name: 'الإخلاص' },
+    { number: 113, name: 'الفلق' },
+    { number: 114, name: 'الناس' }
+  ];
+
   // استخراج قائمة السور
   useEffect(() => {
     if (ayahs && ayahs.length > 0) {
@@ -85,6 +101,55 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     };
   }, [isVisible]);
 
+  // اختيار سورة من الاختصارات
+  const handleSurahShortcut = (surahNumber) => {
+    setSelectedSurah(surahNumber.toString());
+    
+    // تحميل بيانات السورة المختارة
+    const surahAyahs = ayahs.filter(ayah => 
+      ayah.sura_no === parseInt(surahNumber)
+    );
+    
+    if (surahAyahs.length > 0) {
+      const max = Math.max(...surahAyahs.map(a => a.aya_no));
+      setMaxAyah(max);
+      setToAyah(max.toString());
+      setFromAyah('1');
+    }
+  };
+
+  // اختيار نطاق كامل للسورة
+  const handleFullSurah = (surahNumber) => {
+    setSelectedSurah(surahNumber.toString());
+    
+    const surahAyahs = ayahs.filter(ayah => 
+      ayah.sura_no === parseInt(surahNumber)
+    );
+    
+    if (surahAyahs.length > 0) {
+      const max = Math.max(...surahAyahs.map(a => a.aya_no));
+      setMaxAyah(max);
+      setToAyah(max.toString());
+      setFromAyah('1');
+      
+      // البحث مباشرة عن السورة كاملة
+      setTimeout(() => {
+        onSearch(surahNumber.toString(), 1, max);
+      }, 300);
+    }
+  };
+
+  // البحث عن السورة كاملة
+  const searchFullSurah = () => {
+    if (!selectedSurah) {
+      setSearchError('يرجى اختيار سورة');
+      return;
+    }
+    
+    onSearch(selectedSurah, 1, maxAyah);
+  };
+
+  // البحث عن نطاق محدد
   const handleSearch = () => {
     setSearchError('');
     
@@ -130,7 +195,26 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     return options;
   };
 
+  // الحصول على اسم السورة المختارة
+  const getSelectedSurahName = () => {
+    if (!selectedSurah) return '';
+    const surah = surahList.find(s => s.number.toString() === selectedSurah);
+    return surah ? surah.name : '';
+  };
+
+  // الحصول على معلومات السور الشعبية من بيانات القرآن
+  const getPopularSurahData = () => {
+    return popularSurahs.map(popular => {
+      const surahData = surahList.find(s => s.number === popular.number);
+      return {
+        ...popular,
+        name: surahData ? surahData.name : popular.name
+      };
+    }).filter(surah => surah.name); // إزالة السور غير الموجودة في البيانات
+  };
+
   const ayahOptions = generateAyahOptions();
+  const popularSurahData = getPopularSurahData();
 
   if (!isVisible) return null;
 
@@ -152,6 +236,47 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
         </div>
         
         <div className="sheet-content">
+          {/* أزرار اختيار سريعة للسور */}
+          <div className="quick-surah-shortcuts">
+            <h4 className="shortcuts-title">
+              <span className="shortcut-icon">⚡</span>
+              اختصار البحث
+            </h4>
+            <div className="shortcuts-grid">
+              {popularSurahData.slice(0, 6).map(surah => (
+                <button
+                  key={surah.number}
+                  className={`surah-shortcut-btn ${
+                    selectedSurah === surah.number.toString() ? 'active' : ''
+                  }`}
+                  onClick={() => handleSurahShortcut(surah.number)}
+                >
+                  <span className="shortcut-surah-number">{surah.number}</span>
+                  <span className="shortcut-surah-name">{surah.name}</span>
+                </button>
+              ))}
+            </div>
+            
+            {popularSurahData.length > 6 && (
+              <div className="more-shortcuts">
+                <div className="more-grid">
+                  {popularSurahData.slice(6).map(surah => (
+                    <button
+                      key={surah.number}
+                      className={`surah-shortcut-btn small ${
+                        selectedSurah === surah.number.toString() ? 'active' : ''
+                      }`}
+                      onClick={() => handleSurahShortcut(surah.number)}
+                    >
+                      <span className="shortcut-surah-number">{surah.number}</span>
+                      <span className="shortcut-surah-name">{surah.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* اختيار السورة */}
           <div className="input-group">
             <label htmlFor="surah-select">
@@ -174,13 +299,55 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
             {selectedSurah && (
               <div className="surah-info">
                 <span className="surah-name">
-                  {surahList.find(s => s.number.toString() === selectedSurah)?.name}
+                  {getSelectedSurahName()}
                 </span>
                 <span className="ayah-count">
                   عدد الآيات: {maxAyah}
                 </span>
               </div>
             )}
+          </div>
+
+          {/* أزرار سريعة للاختيار */}
+          <div className="quick-actions-section">
+            <div className="quick-action-buttons">
+              <button 
+                className="quick-action-btn full-surah-btn"
+                onClick={searchFullSurah}
+                disabled={!selectedSurah}
+              >
+                <span className="action-icon">📖</span>
+                <span className="action-text">السورة كاملة</span>
+              </button>
+              
+              <button 
+                className="quick-action-btn last-ten-btn"
+                onClick={() => {
+                  if (selectedSurah && maxAyah > 10) {
+                    setFromAyah(Math.max(1, maxAyah - 9).toString());
+                    setToAyah(maxAyah.toString());
+                  }
+                }}
+                disabled={!selectedSurah || maxAyah <= 10}
+              >
+                <span className="action-icon">🔟</span>
+                <span className="action-text">العشر الأخيرة</span>
+              </button>
+              
+              <button 
+                className="quick-action-btn first-ten-btn"
+                onClick={() => {
+                  if (selectedSurah) {
+                    setFromAyah('1');
+                    setToAyah(Math.min(10, maxAyah).toString());
+                  }
+                }}
+                disabled={!selectedSurah}
+              >
+                <span className="action-icon">🔢</span>
+                <span className="action-text">العشر الأولى</span>
+              </button>
+            </div>
           </div>
 
           {/* تحديد نطاق الآيات */}
@@ -213,6 +380,7 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
               </div>
               
               <div className="range-separator">
+                <span className="separator-text">→</span>
               </div>
               
               <div className="range-input">
@@ -244,7 +412,7 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
               
               {selectedSurah && fromAyah && toAyah && (
                 <div className="preview-text">
-                  {`${surahList.find(s => s.number.toString() === selectedSurah)?.name} 
+                  {`${getSelectedSurahName()} 
                   (من آية ${fromAyah} إلى آية ${toAyah})`}
                 </div>
               )}
@@ -267,13 +435,25 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
               إلغاء
             </button>
             
-            <button 
-              className="search-btn"
-              onClick={handleSearch}
-            >
-              <span className="btn-icon">🔍</span>
-              بحث
-            </button>
+            <div className="search-buttons-group">
+              <button 
+                className="search-full-btn"
+                onClick={searchFullSurah}
+                disabled={!selectedSurah}
+              >
+                <span className="btn-icon">📖</span>
+                السورة كاملة
+              </button>
+              
+              <button 
+                className="search-btn"
+                onClick={handleSearch}
+                disabled={!selectedSurah || parseInt(fromAyah) > parseInt(toAyah)}
+              >
+                <span className="btn-icon">🔍</span>
+                بحث بالنطاق
+              </button>
+            </div>
           </div>
         </div>
       </div>

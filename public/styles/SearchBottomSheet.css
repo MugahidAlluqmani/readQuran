@@ -447,3 +447,267 @@
       font-size: 1rem;
     }
   }
+
+  /* أزرار الاختصارات السريعة */
+.quick-surah-shortcuts {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 15px;
+  border: 1px solid #dee2e6;
+}
+
+.shortcuts-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.shortcut-icon {
+  font-size: 1.2rem;
+  color: #ff9800;
+}
+
+.shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.surah-shortcut-btn {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-height: 70px;
+}
+
+.surah-shortcut-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1976d2;
+}
+
+.surah-shortcut-btn.active {
+  background: linear-gradient(135deg, #1976d2, #0d47a1);
+  border-color: #1976d2;
+  color: white;
+}
+
+.surah-shortcut-btn.active .shortcut-surah-number {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.surah-shortcut-btn.small {
+  min-height: 60px;
+  padding: 10px 6px;
+}
+
+.shortcut-surah-number {
+  background: #e3f2fd;
+  color: #1976d2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.surah-shortcut-btn.active .shortcut-surah-number {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.shortcut-surah-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.more-shortcuts {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+}
+
+.more-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+/* قسم الإجراءات السريعة */
+.quick-actions-section {
+  margin: 20px 0;
+}
+
+.quick-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quick-action-btn {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1976d2;
+}
+
+.quick-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.full-surah-btn {
+  background: #e8f5e9;
+  border-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.full-surah-btn:hover:not(:disabled) {
+  border-color: #2e7d32;
+}
+
+.last-ten-btn {
+  background: #fff3e0;
+  border-color: #ffe0b2;
+  color: #f57c00;
+}
+
+.last-ten-btn:hover:not(:disabled) {
+  border-color: #f57c00;
+}
+
+.first-ten-btn {
+  background: #e3f2fd;
+  border-color: #bbdefb;
+  color: #1976d2;
+}
+
+.first-ten-btn:hover:not(:disabled) {
+  border-color: #1976d2;
+}
+
+.action-icon {
+  font-size: 1.4rem;
+}
+
+.action-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* مجموعة أزرار البحث */
+.search-buttons-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex: 1;
+}
+
+.search-full-btn {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-full-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.search-full-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .shortcuts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .more-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .quick-action-buttons {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .search-buttons-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .surah-shortcut-btn {
+    min-height: 65px;
+  }
+  
+  .surah-shortcut-btn.small {
+    min-height: 55px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .more-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .surah-shortcut-btn {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 12px 15px;
+    min-height: auto;
+  }
+  
+  .shortcut-surah-name {
+    flex: 1;
+    text-align: right;
+  }
+}
