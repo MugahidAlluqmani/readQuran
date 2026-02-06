@@ -10,12 +10,15 @@ import SettingsPanel from './components/SettingsPanel';
 import '../public/styles/main.css'
 import '../public/styles/animations.css';
 import quranData from '../public/data/hafs_smart_v8.json';
-
+import { BookmarkUtils } from "./utils/bookmarkUtils"
+import { loadTafsirData } from './utils/tafsirParser';
 function Home() {
   const [ayahs, setAyahs] = useState([]);
   const [displayAyahs, setDisplayAyahs] = useState([]);
   const [currentAyahIndex, setCurrentAyahIndex] = useState(0);
-  
+  const [tafsirData, setTafsirData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   // حالة البحث
   const [showSearchSheet, setShowSearchSheet] = useState(false);
   const [searchResult, setSearchResult] = useState(null);
@@ -113,6 +116,31 @@ function Home() {
     return '';
   };
 
+  useEffect(() => {
+    // تحميل بيانات التفسير
+    const loadData = async () => {
+      try {
+        const [ayahsData, tafsirData] = await Promise.all([
+          fetch('/data/hafs_smart_v8.json').then(res => res.json()),
+          loadTafsirData()
+        ]);
+        
+        setAyahs(ayahsData);
+        setTafsirData(tafsirData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, []);
+
+  if (loading) {
+    return <div>جاري التحميل...</div>;
+  }
+
   return (
     <div className={`Home ${darkMode ? 'dark-mode' : ''}`}>
       {/* الشريط العلوي */}
@@ -157,6 +185,7 @@ function Home() {
             showTranslation={showTranslation}
             showTajweed={showTajweed}
             onBack={handleShowSingleView}
+            tafsirData={tafsirData}
           />
         ) : currentAyah ? (
           // عرض آية واحدة
@@ -230,7 +259,48 @@ function Home() {
         onSearch={handleSearch}
         ayahs={ayahs}
       />
+
+      {searchResult && (
+  <div className="bookmark-controls">
+    <button 
+      className="control-btn export-btn"
+      onClick={BookmarkUtils.exportData}
+      title="تصدير البيانات"
+    >
+      📤 تصدير
+    </button>
+    
+    <button 
+      className="control-btn import-btn"
+      onClick={() => document.getElementById('import-input').click()}
+      title="استيراد البيانات"
+    >
+      📥 استيراد
+    </button>
+    
+    <input
+      id="import-input"
+      type="file"
+      accept=".json"
+      style={{ display: 'none' }}
+      onChange={async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          try {
+            await BookmarkUtils.importData(file);
+            alert('تم استيراد البيانات بنجاح');
+            window.location.reload();
+          } catch (error) {
+            alert(`خطأ في الاستيراد: ${error.message}`);
+          }
+        }
+        e.target.value = '';
+      }}
+    />
+  </div>
+)}
     </div>
+    
   );
 }
 
