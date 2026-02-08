@@ -9,6 +9,10 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
   const [toAyah, setToAyah] = useState('1');
   const [maxAyah, setMaxAyah] = useState(1);
   const [searchError, setSearchError] = useState('');
+  const [recentSurahs, setRecentSurahs] = useState([]);
+  const [lastSurah, setLastSurah] = useState(null);
+  const [showRecent, setShowRecent] = useState(true);
+  
   const sheetRef = useRef(null);
   const overlayRef = useRef(null);
 
@@ -28,7 +32,94 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     { number: 114, name: 'الناس' }
   ];
 
-  // استخراج قائمة السور
+  // تحميل آخر السور التي تم زيارتها
+  useEffect(() => {
+    loadRecentSurahs();
+    loadLastSurah();
+  }, []);
+
+  // تحميل السور الأخيرة من localStorage
+  const loadRecentSurahs = () => {
+    try {
+      const saved = localStorage.getItem('quran_recent_surahs');
+      if (saved) {
+        const recent = JSON.parse(saved);
+        setRecentSurahs(recent);
+      }
+    } catch (error) {
+      console.error('Error loading recent surahs:', error);
+    }
+  };
+
+  // تحميل آخر سورة تم زيارتها
+  const loadLastSurah = () => {
+    try {
+      const saved = localStorage.getItem('quran_last_surah');
+      if (saved) {
+        const last = JSON.parse(saved);
+        setLastSurah(last);
+        // تعيينها كسورة مختارة افتراضياً
+        if (last && last.number) {
+          setSelectedSurah(last.number.toString());
+        }
+      }
+    } catch (error) {
+      console.error('Error loading last surah:', error);
+    }
+  };
+
+  // حفظ السورة كآخر سورة تمت زيارتها
+  const saveLastSurah = (surahNumber, from, to) => {
+    try {
+      const surahData = surahList.find(s => s.number === surahNumber);
+      if (!surahData) return;
+      
+      const lastSurahData = {
+        number: surahNumber,
+        name: surahData.name,
+        fromAyah: from,
+        toAyah: to,
+        visitedAt: new Date().toISOString()
+      };
+      
+      // حفظ كآخر سورة
+      localStorage.setItem('quran_last_surah', JSON.stringify(lastSurahData));
+      setLastSurah(lastSurahData);
+      
+      // إضافة إلى السور الأخيرة
+      addToRecentSurahs(lastSurahData);
+      
+    } catch (error) {
+      console.error('Error saving last surah:', error);
+    }
+  };
+
+  // إضافة سورة إلى قائمة السور الأخيرة
+  const addToRecentSurahs = (surahData) => {
+    try {
+      const recent = [...recentSurahs];
+      
+      // إزالة إذا كانت موجودة بالفعل
+      const existingIndex = recent.findIndex(s => s.number === surahData.number);
+      if (existingIndex !== -1) {
+        recent.splice(existingIndex, 1);
+      }
+      
+      // إضافة في البداية
+      recent.unshift(surahData);
+      
+      // حفظ فقط آخر 5 سور
+      const limitedRecent = recent.slice(0, 5);
+      
+      localStorage.setItem('quran_recent_surahs', JSON.stringify(limitedRecent));
+      setRecentSurahs(limitedRecent);
+      
+    } catch (error) {
+      console.error('Error adding to recent surahs:', error);
+    }
+  };
+
+  // استخراج قائمة السور من بيانات الآيات
   useEffect(() => {
     if (ayahs && ayahs.length > 0) {
       const uniqueSurahs = [];
@@ -47,8 +138,8 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
       
       setSurahList(uniqueSurahs);
       
-      // تحديد السورة الأولى افتراضيًا
-      if (uniqueSurahs.length > 0 && !selectedSurah) {
+      // إذا لم يكن هناك آخر سورة محفوظة، تحديد الأولى
+      if (uniqueSurahs.length > 0 && !selectedSurah && !lastSurah) {
         setSelectedSurah(uniqueSurahs[0].number.toString());
       }
     }
@@ -101,11 +192,58 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     };
   }, [isVisible]);
 
+  // اختيار سورة من السور الأخيرة
+  const handleRecentSurah = (surah) => {
+    setSelectedSurah(surah.number.toString());
+    
+    const surahAyahs = ayahs.filter(ayah => 
+      ayah.sura_no === parseInt(surah.number)
+    );
+    
+    if (surahAyahs.length > 0) {
+      const max = Math.max(...surahAyahs.map(a => a.aya_no));
+      setMaxAyah(max);
+      
+      // إذا كان هناك نطاق محفوظ، استخدامه
+      if (surah.fromAyah && surah.toAyah) {
+        setFromAyah(surah.fromAyah.toString());
+        setToAyah(surah.toAyah.toString());
+      } else {
+        setToAyah(max.toString());
+        setFromAyah('1');
+      }
+    }
+  };
+
+  // اختيار آخر سورة تمت زيارتها
+  const handleLastSurah = () => {
+    if (!lastSurah) return;
+    
+    setSelectedSurah(lastSurah.number.toString());
+    
+    const surahAyahs = ayahs.filter(ayah => 
+      ayah.sura_no === parseInt(lastSurah.number)
+    );
+    
+    if (surahAyahs.length > 0) {
+      const max = Math.max(...surahAyahs.map(a => a.aya_no));
+      setMaxAyah(max);
+      
+      // استخدام نطاق محفوظ إذا وجد
+      if (lastSurah.fromAyah && lastSurah.toAyah) {
+        setFromAyah(lastSurah.fromAyah.toString());
+        setToAyah(lastSurah.toAyah.toString());
+      } else {
+        setToAyah(max.toString());
+        setFromAyah('1');
+      }
+    }
+  };
+
   // اختيار سورة من الاختصارات
   const handleSurahShortcut = (surahNumber) => {
     setSelectedSurah(surahNumber.toString());
     
-    // تحميل بيانات السورة المختارة
     const surahAyahs = ayahs.filter(ayah => 
       ayah.sura_no === parseInt(surahNumber)
     );
@@ -134,6 +272,10 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
       
       // البحث مباشرة عن السورة كاملة
       setTimeout(() => {
+        const surahData = surahList.find(s => s.number === surahNumber);
+        if (surahData) {
+          saveLastSurah(surahNumber, 1, max);
+        }
         onSearch(surahNumber.toString(), 1, max);
       }, 300);
     }
@@ -144,6 +286,13 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     if (!selectedSurah) {
       setSearchError('يرجى اختيار سورة');
       return;
+    }
+    
+    const surahNumber = parseInt(selectedSurah);
+    const surahData = surahList.find(s => s.number === surahNumber);
+    
+    if (surahData) {
+      saveLastSurah(surahNumber, 1, maxAyah);
     }
     
     onSearch(selectedSurah, 1, maxAyah);
@@ -161,6 +310,7 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     
     const from = parseInt(fromAyah);
     const to = parseInt(toAyah);
+    const surahNumber = parseInt(selectedSurah);
     
     if (isNaN(from) || isNaN(to)) {
       setSearchError('يرجى إدخال أرقام صحيحة');
@@ -180,6 +330,12 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
     if (from > to) {
       setSearchError('رقم الآية الأولى يجب أن يكون أقل من أو يساوي الآية الأخيرة');
       return;
+    }
+    
+    // حفظ السورة
+    const surahData = surahList.find(s => s.number === surahNumber);
+    if (surahData) {
+      saveLastSurah(surahNumber, from, to);
     }
     
     // تنفيذ البحث
@@ -210,7 +366,107 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
         ...popular,
         name: surahData ? surahData.name : popular.name
       };
-    }).filter(surah => surah.name); // إزالة السور غير الموجودة في البيانات
+    }).filter(surah => surah.name);
+  };
+
+  // تنسيق وقت الزيارة
+  const formatVisitTime = (dateString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 60) {
+      return `قبل ${diffMins} دقيقة`;
+    } else if (diffHours < 24) {
+      return `قبل ${diffHours} ساعة`;
+    } else if (diffDays < 7) {
+      return `قبل ${diffDays} يوم`;
+    } else {
+      return date.toLocaleDateString('ar-EG');
+    }
+  };
+
+  // عرض قائمة السور الأخيرة
+  const renderRecentSurahs = () => {
+    if (recentSurahs.length === 0) return null;
+
+    return (
+      <div className="recent-surahs-section">
+        <div className="section-header">
+          <h4 className="section-title">
+            <span className="title-icon">🕒</span>
+            السور الأخيرة
+            <button 
+              className="toggle-recent-btn"
+              onClick={() => setShowRecent(!showRecent)}
+              title={showRecent ? 'إخفاء السور الأخيرة' : 'إظهار السور الأخيرة'}
+            >
+              {showRecent ? '▲' : '▼'}
+            </button>
+          </h4>
+        </div>
+        
+        {showRecent && (
+          <div className="recent-grid">
+            {recentSurahs.map((surah, index) => (
+              <button
+                key={surah.number}
+                className={`recent-surah-btn ${selectedSurah === surah.number.toString() ? 'active' : ''}`}
+                onClick={() => handleRecentSurah(surah)}
+                title={`${surah.name} - ${surah.fromAyah ? `آيات ${surah.fromAyah}-${surah.toAyah}` : 'كل السورة'}`}
+              >
+                <div className="recent-surah-header">
+                  <span className="recent-surah-number">{surah.number}</span>
+                  <span className="recent-surah-name">{surah.name}</span>
+                  <span className="recent-surah-range">
+                    {surah.fromAyah ? `${surah.fromAyah}-${surah.toAyah}` : 'كاملة'}
+                  </span>
+                </div>
+                {surah.visitedAt && (
+                  <div className="recent-surah-time">
+                    {formatVisitTime(surah.visitedAt)}
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // عرض زر آخر سورة
+  const renderLastSurahButton = () => {
+    if (!lastSurah) return null;
+
+    return (
+      <div className="last-surah-section">
+        <button
+          className="last-surah-btn"
+          onClick={handleLastSurah}
+          title="العودة إلى آخر سورة قمت بزيارتها"
+        >
+          <div className="last-surah-content">
+            <span className="last-surah-icon">↩️</span>
+            <div className="last-surah-info">
+              <span className="last-surah-label">آخر زيارة:</span>
+              <span className="last-surah-name">{lastSurah.name}</span>
+              <span className="last-surah-range">
+                {lastSurah.fromAyah ? `آيات ${lastSurah.fromAyah}-${lastSurah.toAyah}` : 'كل السورة'}
+              </span>
+            </div>
+            <span className="last-surah-time">
+              {formatVisitTime(lastSurah.visitedAt)}
+            </span>
+          </div>
+        </button>
+      </div>
+    );
   };
 
   const ayahOptions = generateAyahOptions();
@@ -236,6 +492,33 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
         </div>
         
         <div className="sheet-content">
+          {/* زر آخر سورة */}
+          {renderLastSurahButton()}
+          
+          {/* قائمة السور الأخيرة */}
+          {renderRecentSurahs()}
+                    {/* أزرار سريعة للاختيار */}
+                    <div className="quick-actions-section">
+            <div className="quick-action-buttons">
+              
+              <button 
+                className="quick-action-btn clear-history-btn"
+                onClick={() => {
+                  if (confirm('هل تريد حذف كل سجل السور الأخيرة؟')) {
+                    localStorage.removeItem('quran_recent_surahs');
+                    localStorage.removeItem('quran_last_surah');
+                    setRecentSurahs([]);
+                    setLastSurah(null);
+                    alert('تم حذف السجل');
+                  }
+                }}
+                title="حذف سجل السور الأخيرة"
+              >
+                <span className="action-icon">🗑️</span>
+                <span className="action-text">مسح السجل</span>
+              </button>
+            </div>
+          </div>
           {/* أزرار اختيار سريعة للسور */}
           <div className="quick-surah-shortcuts">
             <h4 className="shortcuts-title">
@@ -289,6 +572,7 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
               onChange={(e) => setSelectedSurah(e.target.value)}
               className="surah-select"
             >
+              <option value="">-- اختر سورة --</option>
               {surahList.map(surah => (
                 <option key={surah.number} value={surah.number}>
                   {surah.number}. {surah.name} ({surah.nameEn})
@@ -304,51 +588,24 @@ const SearchBottomSheet = ({ isVisible, onClose, onSearch, ayahs }) => {
                 <span className="ayah-count">
                   عدد الآيات: {maxAyah}
                 </span>
+                <button 
+                  className="add-to-recent-btn"
+                  onClick={() => {
+                    const surahNumber = parseInt(selectedSurah);
+                    const surahData = surahList.find(s => s.number === surahNumber);
+                    if (surahData) {
+                      saveLastSurah(surahNumber, parseInt(fromAyah), parseInt(toAyah));
+                      alert(`تم حفظ ${surahData.name} في السور الأخيرة`);
+                    }
+                  }}
+                  title="حفظ في السور الأخيرة"
+                >
+                  💾
+                </button>
               </div>
             )}
           </div>
 
-          {/* أزرار سريعة للاختيار */}
-          <div className="quick-actions-section">
-            <div className="quick-action-buttons">
-              <button 
-                className="quick-action-btn full-surah-btn"
-                onClick={searchFullSurah}
-                disabled={!selectedSurah}
-              >
-                <span className="action-icon">📖</span>
-                <span className="action-text">السورة كاملة</span>
-              </button>
-              
-              <button 
-                className="quick-action-btn last-ten-btn"
-                onClick={() => {
-                  if (selectedSurah && maxAyah > 10) {
-                    setFromAyah(Math.max(1, maxAyah - 9).toString());
-                    setToAyah(maxAyah.toString());
-                  }
-                }}
-                disabled={!selectedSurah || maxAyah <= 10}
-              >
-                <span className="action-icon">🔟</span>
-                <span className="action-text">العشر الأخيرة</span>
-              </button>
-              
-              <button 
-                className="quick-action-btn first-ten-btn"
-                onClick={() => {
-                  if (selectedSurah) {
-                    setFromAyah('1');
-                    setToAyah(Math.min(10, maxAyah).toString());
-                  }
-                }}
-                disabled={!selectedSurah}
-              >
-                <span className="action-icon">🔢</span>
-                <span className="action-text">العشر الأولى</span>
-              </button>
-            </div>
-          </div>
 
           {/* تحديد نطاق الآيات */}
           <div className="range-group">

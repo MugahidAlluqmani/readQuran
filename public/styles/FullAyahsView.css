@@ -20,6 +20,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    display: none;
   }
   
   .header-container {
@@ -324,7 +325,7 @@
   .mushaf-content {
     padding: 30px 40px;
     min-height: 500px;
-    background: #fafafa;
+    background: #c8e6c9;
     border-bottom: 1px solid #eee;
   }
   
@@ -439,6 +440,7 @@
     font-size: 1.6rem;
     line-height: 2;
     letter-spacing: 0.3px;
+    font-weight: bold;
   }
   
   .app.dark-mode .quran-text-inline {
@@ -766,6 +768,9 @@
     }
   }
   
+  .bookmarks-sidebar{
+    width: 100%;
+  }
   @media (max-width: 480px) {
     .mushaf-pages-container {
       padding: 10px;

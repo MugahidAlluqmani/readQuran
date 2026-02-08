@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import '../../public/styles/FullAyahsView.css';
 import TafsirView from "./TafsirView"
@@ -152,7 +152,7 @@ AudioPlayer.propTypes = {
 };
 
 // المكون الرئيسي
-const FullAyahsView = ({ 
+const FullAyahsView = forwardRef(({
   ayahs = [], 
   searchResult = null,
   showTranslation = true,
@@ -161,7 +161,7 @@ const FullAyahsView = ({
   isLoading = false,
   error = null,
   tafsirData = [] // بيانات التفسير الجديدة
-}) => {
+},ref) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pages, setPages] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -199,6 +199,65 @@ const FullAyahsView = ({
   const [bookmarkAyahDetails, setBookmarkAyahDetails] = useState(null);
   const [isScrollingToAyah, setIsScrollingToAyah] = useState(false);
   const highlightedTimer = useRef(null);
+
+    // دالة للتمرير إلى الأعلى
+    const scrollToTop = useCallback(() => {
+      if (containerRef.current) {
+        // الانتقال السلس إلى الأعلى
+        containerRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+        // إعادة تعيين الصفحة النشطة إلى الأولى
+        if (pages.length > 0) {
+          setActivePageIndex(0);
+          setCurrentPage(pages[0].pageNumber);
+        }
+        
+        // إزالة أي تظليل أو تحديد سابق
+        setHighlightedAyah(null);
+        setSelectedAyah(null);
+        setBookmarkAyahDetails(null);
+        
+        // إذا كانت هناك أول آية، يمكن التركيز عليها
+        if (ayahs.length > 0) {
+          const firstAyah = ayahs[0];
+          setTimeout(() => {
+            const firstAyahElement = document.querySelector(`[data-ayah-id="${firstAyah.id}"]`);
+            if (firstAyahElement) {
+              // إضافة تظليل خفيف لأول آية مؤقتاً
+              firstAyahElement.classList.add('first-ayah-highlight');
+              setTimeout(() => {
+                firstAyahElement.classList.remove('first-ayah-highlight');
+              }, 2000);
+            }
+          }, 500);
+        }
+      } else {
+        // طريقة احتياطية
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      
+      // إشعار المستخدم
+      showToast('تم الانتقال إلى بداية السورة', 'success');
+    }, [pages, ayahs]);
+
+      // تعريف وظائف يمكن استدعاؤها من الخارج
+  useImperativeHandle(ref, () => ({
+    scrollToTop,
+    getCurrentPage: () => currentPage,
+    getActivePageIndex: () => activePageIndex,
+    scrollToAyah: (ayahId) => {
+      const ayahElement = document.querySelector(`[data-ayah-id="${ayahId}"]`);
+      if (ayahElement && containerRef.current) {
+        containerRef.current.scrollTo({
+          top: ayahElement.offsetTop - 100,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }));
 
   // معالجة بيانات التفسير عند التحميل
   useEffect(() => {
@@ -339,7 +398,7 @@ const FullAyahsView = ({
           if (!isScrollingToAyah) {
             setHighlightedAyah(null);
           }
-        }, 5000);
+        }, 500);
       }, highlightOnly ? 0 : 300);
       
       if (!highlightOnly) {
@@ -752,7 +811,7 @@ const FullAyahsView = ({
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     `;
     
-    document.body.appendChild(toast);
+    //document.body.appendChild(toast);
     
     toastTimeout.current = setTimeout(() => {
       if (toast.parentNode) {
@@ -1206,6 +1265,9 @@ const FullAyahsView = ({
                     <React.Fragment key={ayah.id}>
                       {isSurahStart && (
                         <div className="surah-title-section">
+                          <div className='surah-name-arabic'> 
+                            {ayah.sura_name_ar}
+                          </div>
                              <div className="basmala-section">
                                 <span className="basmala-arabic">
                                       
@@ -1605,6 +1667,7 @@ const FullAyahsView = ({
 
       {/* المحتوى الرئيسي */}
       <div 
+      
         ref={containerRef}
         className="mushaf-pages-container"
         style={{ 
@@ -1612,6 +1675,8 @@ const FullAyahsView = ({
           lineHeight: `${zoomLevel * 1.2}%`
         }}
       >
+              {/* شريط الإشارات المرجعية */}
+      {renderBookmarksBar()}
         {pages.map((page, index) => renderMushafPage(page, index))}
       </div>
 
@@ -1647,8 +1712,7 @@ const FullAyahsView = ({
         </div>
       </div>
 
-      {/* شريط الإشارات المرجعية */}
-      {renderBookmarksBar()}
+
 
       {/* قائمة الإشارات المرجعية */}
       {renderBookmarksMenu()}
@@ -1667,7 +1731,7 @@ const FullAyahsView = ({
       )}
     </div>
   );
-};
+});
 
 FullAyahsView.propTypes = {
   ayahs: PropTypes.array,

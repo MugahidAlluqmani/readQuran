@@ -174,6 +174,7 @@ const TafsirView = ({
               className={`view-toggle translate ${showArabicOnly ? 'active' : ''}`}
               onClick={() => setShowArabicOnly(!showArabicOnly)}
               title={showArabicOnly ? 'عرض التفسير والترجمة' : 'عرض التفسير العربي فقط'}
+              style={{display: "none"}}
             >
               {showArabicOnly ? '🌐' : '📖'}
             </button>

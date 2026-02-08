@@ -1,0 +1,822 @@
+/* Home.css */
+.home-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .home-container.dark-mode {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+  
+  /* شريط الأدوات العلوي */
+  .top-toolbar {
+    background: white;
+    border-bottom: 1px solid #eaeaea;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .all-quran-btn{
+    display: none !important;
+  }
+  .continue-btn{
+    display: none !important;
+  }
+  .search-btn{
+    color: steelblue;
+  }
+  .dark-mode .top-toolbar {
+    background: #2d2d2d;
+    border-color: #444;
+  }
+  
+  .toolbar-left,
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .toolbar-center {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .app-title {
+    margin: 0;
+    font-size: 20px;
+    color: #2c3e50;
+    font-weight: bold;
+  }
+  
+  .dark-mode .app-title {
+    color: #e0e0e0;
+  }
+  
+  .current-view-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  
+  .surah-name {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  .dark-mode .surah-name {
+    color: #e0e0e0;
+  }
+  
+  .range-info,
+  .total-info {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .dark-mode .range-info,
+  .dark-mode .total-info {
+    background: #444;
+    color: #aaa;
+  }
+  
+  /* أزرار الأدوات */
+  .toolbar-btn {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+  }
+  
+  .toolbar-btn:hover {
+    background: #e9e9e9;
+    transform: translateY(-2px);
+  }
+  
+  .dark-mode .toolbar-btn {
+    background: #444;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .toolbar-btn:hover {
+    background: #555;
+  }
+  
+  .toolbar-btn.active {
+    background: #4a6491;
+    color: white;
+    border-color: #4a6491;
+  }
+  
+  .dark-mode .toolbar-btn.active {
+    background: #64b5f6;
+    color: #2d2d2d;
+  }
+  
+  /* عناصر التحكم في الخط */
+  .font-controls {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #f5f5f5;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  
+  .dark-mode .font-controls {
+    background: #444;
+  }
+  
+  .font-btn {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .dark-mode .font-btn {
+    background: #555;
+    border-color: #666;
+    color: #e0e0e0;
+  }
+  
+  .font-size {
+    font-size: 14px;
+    min-width: 40px;
+    text-align: center;
+  }
+  
+  /* شريط السور السريعة */
+  .quick-surahs-bar {
+    background: white;
+    border-bottom: 1px solid #eaeaea;
+    padding: 10px 20px;
+    overflow-x: auto;
+  }
+  
+  .dark-mode .quick-surahs-bar {
+    background: #2d2d2d;
+    border-color: #444;
+  }
+  
+  .quick-surahs-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: max-content;
+  }
+  
+  .quick-title {
+    font-weight: bold;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .dark-mode .quick-title {
+    color: #aaa;
+  }
+  
+  .quick-surah-btn {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  
+  .quick-surah-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+  }
+  
+  .dark-mode .quick-surah-btn {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .quick-number {
+    background: #64b5f6;
+  }
+  
+  .quick-name {
+    white-space: nowrap;
+  }
+  
+  /* المحتوى الرئيسي */
+  .main-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* أزرار التحكم في البيانات */
+  .data-controls {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+  
+  .data-btn {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 10px 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  
+  .data-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .dark-mode .data-btn {
+    background: #444;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+  
+  /* شاشة التحميل */
+  .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #2c3e50, #4a6491);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .loading-content {
+    text-align: center;
+    color: white;
+  }
+  
+  .quran-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .loading-content .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .loading-content h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+  }
+  
+  .loading-content p {
+    margin: 0;
+    opacity: 0.8;
+  }
+  
+  /* تحسينات للأجهزة المحمولة */
+  @media (max-width: 768px) {
+    .top-toolbar {
+      padding: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .toolbar-left,
+    .toolbar-right {
+      flex: 1;
+      justify-content: center;
+      margin: 5px 0;
+    }
+    
+    .toolbar-center {
+      order: -1;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .toolbar-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    .quick-surahs-bar {
+      padding: 8px 10px;
+    }
+    
+    .quick-surah-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    
+    .data-controls {
+      bottom: 70px;
+      right: 10px;
+    }
+    
+    .data-btn {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .quick-surahs-container {
+      gap: 8px;
+    }
+    
+    .quick-surah-btn {
+      padding: 4px 8px;
+    }
+    
+    .quick-name {
+     
+    }
+  }
+  /* Home.css - إضافات أزرار السور */
+
+/* شريط تنقل السور */
+.surah-navigation-bar {
+  background: white;
+  border-bottom: 1px solid #eaeaea;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  bottom: 0px;
+  z-index: 1;
+  width: 100%;
+}
+
+.dark-mode .surah-navigation-bar {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.surah-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.surah-nav-btn {
+  background: #f8f9fa;
+  border: 2px solid #4a6491;
+  color: #4a6491;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.surah-nav-btn:hover:not(:disabled) {
+  background: #4a6491;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 100, 145, 0.3);
+}
+
+.surah-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #ccc;
+  background: #f5f5f5;
+}
+
+.dark-mode .surah-nav-btn {
+  background: #3d3d3d;
+  border-color: #64b5f6;
+  color: #64b5f6;
+}
+
+.dark-mode .surah-nav-btn:hover:not(:disabled) {
+  background: #64b5f6;
+  color: #2d2d2d;
+}
+
+/* معلومات السورة الحالية */
+.current-surah-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  justify-content: center;
+}
+
+.surah-number-badge {
+  background: linear-gradient(135deg, #4a6491, #2c3e50);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(74, 100, 145, 0.3);
+}
+
+.dark-mode .surah-number-badge {
+  background: linear-gradient(135deg, #64b5f6, #2196f3);
+}
+
+.surah-details {
+  text-align: right;
+}
+
+.surah-name-display {
+  text-align: center;
+  margin: 0 0 5px 0;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+.dark-mode .surah-name-display {
+  color: #e0e0e0;
+}
+
+.surah-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 14px;
+  color: #666;
+}
+
+.dark-mode .surah-meta {
+  color: #aaa;
+}
+
+.surah-ayahs, .surah-type {
+  background: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 15px;
+}
+
+.dark-mode .surah-ayahs,
+.dark-mode .surah-type {
+  background: #444;
+}
+
+/* زر السورة التالية الثابت */
+.next-surah-fixed-btn {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.next-surah-btn {
+
+}
+
+.next-surah-btn:hover {
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+}
+
+.btn-icon {
+  font-size: 20px;
+}
+
+.btn-text {
+  text-align: center;
+  flex: 1;
+}
+
+/* تحسين شريط السور السريعة */
+.quick-surah-btn.active {
+  background: #4a6491;
+  color: white;
+  border-color: #4a6491;
+}
+
+.dark-mode .quick-surah-btn.active {
+  background: #64b5f6;
+  border-color: #64b5f6;
+  color: #2d2d2d;
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+  .surah-nav-container {
+    flex-direction: row;
+    gap: 10px;
+  }
+  
+  .surah-nav-btn {
+    min-width: 120px;
+    padding: 8px 15px;
+    font-size: 12px;
+    width: 100%;
+  }
+  
+  .current-surah-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .surah-details {
+    text-align: center;
+  }
+  
+  .surah-name-display {
+    font-size: 18px;
+  }
+  
+  .next-surah-fixed-btn {
+    bottom: 80px;
+  }
+  
+  .next-surah-btn {
+
+  }
+}
+
+@media (max-width: 480px) {
+  .surah-nav-btn {
+    min-width: 100px;
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  .next-surah-btn {
+
+  }
+  
+  .quick-surah-btn .quick-name {
+    
+  }
+}
+/* Home.css - إضافات أزرار التمرير */
+
+/* زر الذهاب إلى بداية السورة في شريط المعلومات */
+.go-to-start-btn {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
+}
+
+.go-to-start-btn:hover {
+  background: linear-gradient(135deg, #ffb74d, #ff9800);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(255, 152, 0, 0.4);
+}
+
+.dark-mode .go-to-start-btn {
+  background: linear-gradient(135deg, #ffb74d, #ff9800);
+}
+
+.dark-mode .go-to-start-btn:hover {
+  background: linear-gradient(135deg, #ffcc80, #ffb74d);
+}
+
+/* زر العودة للأعلى */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #4a6491, #2c3e50);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(74, 100, 145, 0.4);
+  z-index: 100;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-to-top-btn:hover {
+  background: linear-gradient(135deg, #5a7491, #3c4e60);
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 6px 20px rgba(74, 100, 145, 0.6);
+}
+
+.dark-mode .scroll-to-top-btn {
+  background: linear-gradient(135deg, #64b5f6, #2196f3);
+}
+
+.dark-mode .scroll-to-top-btn:hover {
+  background: linear-gradient(135deg, #90caf9, #64b5f6);
+}
+
+/* زر العودة للأعلى داخل FullAyahsView */
+.internal-scroll-to-top {
+  position: sticky;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #4a6491, #2c3e50);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(74, 100, 145, 0.4);
+  z-index: 50;
+  transition: all 0.3s;
+  margin: 20px auto;
+  display: block;
+}
+
+.internal-scroll-to-top:hover {
+  background: linear-gradient(135deg, #5a7491, #3c4e60);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 100, 145, 0.6);
+}
+
+.dark-mode .internal-scroll-to-top {
+  background: linear-gradient(135deg, #64b5f6, #2196f3);
+}
+
+/* تظليل أول آية */
+.first-ayah-highlight {
+  animation: firstAyahPulse 2s ease-in-out;
+  position: relative;
+}
+
+.first-ayah-highlight::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.2));
+  border-radius: 10px;
+  z-index: -1;
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+@keyframes firstAyahPulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 152, 0, 0);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(255, 152, 0, 0.3);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* تأثير الانتقال بين السور */
+@keyframes surahTransition {
+  from {
+    opacity: 0.5;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mushaf-pages-container {
+  animation: surahTransition 0.5s ease;
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+  .scroll-to-top-btn {
+    bottom: 80px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+  
+  .go-to-start-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  .internal-scroll-to-top {
+    padding: 10px 20px;
+    font-size: 12px;
+    bottom: 10px;
+  }
+  
+  .surah-meta {
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-to-top-btn {
+    bottom: 70px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .go-to-start-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  .internal-scroll-to-top {
+    padding: 8px 15px;
+    font-size: 11px;
+  }
+}

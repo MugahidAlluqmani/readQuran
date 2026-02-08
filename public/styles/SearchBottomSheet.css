@@ -455,6 +455,7 @@
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-radius: 15px;
   border: 1px solid #dee2e6;
+  display: none;
 }
 
 .shortcuts-title {
@@ -711,3 +712,301 @@
     text-align: right;
   }
 }
+/* SearchBottomSheet.css - إضافات جديدة */
+
+/* آخر سورة */
+.last-surah-section {
+  margin-bottom: 20px;
+  display: none;
+}
+
+.last-surah-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 15px;
+  cursor: pointer;
+  text-align: right;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.last-surah-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+.last-surah-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.last-surah-icon {
+  font-size: 24px;
+}
+
+.last-surah-info {
+  flex: 1;
+  margin: 0 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.last-surah-label {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.last-surah-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.last-surah-range {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.last-surah-time {
+  font-size: 11px;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+/* السور الأخيرة */
+.recent-surahs-section {
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.title-icon {
+  font-size: 18px;
+}
+
+.toggle-recent-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  margin-right: auto;
+}
+
+.toggle-recent-btn:hover {
+  background: #f0f0f0;
+}
+
+.recent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.recent-surah-btn {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: right;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recent-surah-btn:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recent-surah-btn.active {
+  background: #e3f2fd;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.recent-surah-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.recent-surah-number {
+  background: #2196F3;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.recent-surah-name {
+  flex: 1;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.recent-surah-range {
+  background: #e3f2fd;
+  color: #2196F3;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.recent-surah-time {
+  font-size: 11px;
+  color: #666;
+  text-align: left;
+  opacity: 0.8;
+}
+
+/* زر إضافة إلى السور الأخيرة */
+.add-to-recent-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.add-to-recent-btn:hover {
+  background: #f0f0f0;
+  color: #2196F3;
+  transform: scale(1.1);
+}
+
+/* زر مسح السجل */
+.quick-action-btn.clear-history-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+}
+
+.quick-action-btn.clear-history-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff5252, #d32f2f);
+}
+
+/* معلومات السورة */
+.surah-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.surah-name {
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.ayah-count {
+  background: #e3f2fd;
+  color: #2196F3;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+  .recent-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .last-surah-content {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .last-surah-icon {
+    align-self: flex-start;
+  }
+  
+  .last-surah-info {
+    margin: 0;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .last-surah-time {
+    align-self: flex-end;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recent-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* تأثيرات الرسوم المتحركة */
+@keyframes slideInRecent {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recent-surah-btn {
+  animation: slideInRecent 0.3s ease forwards;
+}
+
+.recent-surah-btn:nth-child(1) { animation-delay: 0.1s; }
+.recent-surah-btn:nth-child(2) { animation-delay: 0.2s; }
+.recent-surah-btn:nth-child(3) { animation-delay: 0.3s; }
+.recent-surah-btn:nth-child(4) { animation-delay: 0.4s; }
+.recent-surah-btn:nth-child(5) { animation-delay: 0.5s; }

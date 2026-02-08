@@ -9,6 +9,7 @@
     z-index: 1000;
     padding: 10px 0;
     backdrop-filter: blur(10px);
+    display: none;
   }
   
   .app.dark-mode .navigation-bar {
