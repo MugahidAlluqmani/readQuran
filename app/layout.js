@@ -5,8 +5,6 @@ export const metadata = {
   title: 'إقرأ القرآن الكريم - المصحف الشريف',
   description: 'تطبيق القرآن الكريم لقراءة وتفسير آيات الذكر الحكيم',
   manifest: '/manifest.json',
-  themeColor: '#4a6491',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -50,7 +48,12 @@ export const metadata = {
     'msapplication-TileImage': '/icons/144.png'
   }
 }
-
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+}
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
