@@ -1,0 +1,12 @@
+{
+    "buildCommand": "next build",
+    "outputDirectory": ".next",
+    "installCommand": "npm install",
+    "framework": "nextjs",
+    "regions": ["iad1"],
+    "build": {
+      "env": {
+        "NEXT_PRIVATE_TARGET": "server"
+      }
+    }
+  }
