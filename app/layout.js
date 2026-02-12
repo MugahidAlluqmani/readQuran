@@ -1,4 +1,6 @@
 import './globals.css'
+import InstallPrompt from './components/InstallPrompt'
+
 import { Metadata } from 'next'
 
 export const metadata = {
@@ -67,7 +69,11 @@ export default function RootLayout({ children }) {
         <meta name="application-name" content="إقرأ القرآن" />
         <meta name="msapplication-starturl" content="/" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+      <InstallPrompt /> {/* ✅ هنا يظهر في كل الصفحات */}
+
+      </body>
     </html>
   )
 }

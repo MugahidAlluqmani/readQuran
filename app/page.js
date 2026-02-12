@@ -119,9 +119,7 @@ export default function Home() {
   }
 
   return (
-<>
-<InstallPrompt />
-</>,
+
     <div className="home-page">
       <header className="home-header">
         <h1 className="home-title">القرآن الكريم</h1>

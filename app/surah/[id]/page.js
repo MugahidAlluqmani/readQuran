@@ -398,9 +398,7 @@ export default function SurahPage() {
 
 
   return (
-    <>
-                <InstallPrompt />
-    </>,
+
     <div className={`home-container ${darkMode ? 'dark-mode' : ''}`}>
       {/* شريط معلومات السورة */}
       <div className="surah-navigation-bar">

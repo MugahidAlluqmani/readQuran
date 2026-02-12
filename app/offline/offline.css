@@ -1,0 +1,132 @@
+.offline-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .offline-header {
+    margin-bottom: 40px;
+  }
+  
+  .offline-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .offline-header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 28px;
+  }
+  
+  .offline-header p {
+    color: #666;
+    font-size: 16px;
+  }
+  
+  .offline-surahs, .recent-surahs {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .offline-surahs h2, .recent-surahs h2 {
+    color: #4a6491;
+    margin-bottom: 25px;
+    font-size: 22px;
+  }
+  
+  .surahs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .surah-card, .recent-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 15px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .surah-card:hover, .recent-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(74,100,145,0.2);
+  }
+  
+  .surah-number, .recent-number {
+    color: #4a6491;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .surah-name, .recent-name {
+    color: #2c3e50;
+    font-size: 16px;
+  }
+  
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .offline-footer {
+    margin-top: 40px;
+  }
+  
+  .home-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #4a6491, #2c3e50);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(74,100,145,0.3);
+  }
+  
+  .home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74,100,145,0.4);
+  }
+  
+  .offline-note {
+    color: #999;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  @media (max-width: 768px) {
+    .offline-container {
+      padding: 20px;
+    }
+    
+    .offline-header h1 {
+      font-size: 24px;
+    }
+    
+    .surahs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .recent-grid {
+      grid-template-columns: 1fr;
+    }
+  }

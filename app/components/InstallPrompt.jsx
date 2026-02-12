@@ -1,4 +1,5 @@
-"use client"
+// components/InstallPrompt.jsx
+'use client'
 import React, { useState, useEffect } from 'react';
 import './InstallPrompt.css';
 
@@ -7,52 +8,76 @@ const InstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [platform, setPlatform] = useState('web');
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    // التحقق مما إذا كان التطبيق مثبتاً
+    // ✅ التحقق من التثبيت
     if (window.matchMedia('(display-mode: standalone)').matches || 
         window.navigator.standalone === true) {
       setIsInstalled(true);
+      return;
     }
 
-    // تحديد المنصة
+    // ✅ التحقق من نظام التشغيل
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    if (/android/i.test(userAgent)) {
-      setPlatform('android');
-    } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      setIsIOS(true);
       setPlatform('ios');
     }
 
-    // استقبال حدث التثبيت
+    // ✅ التحقق من دعم beforeinstallprompt
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(() => {
+        console.log('✅ Service Worker ready');
+      });
+    }
+
+    // ✅ حدث التثبيت
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowPrompt(true);
+      
+      // ✅ لا تظهر على iOS أو إذا كان مثبتاً مسبقاً
+      if (!isIOS && !isInstalled) {
+        setShowPrompt(true);
+      }
     });
 
     window.addEventListener('appinstalled', () => {
       setIsInstalled(true);
       setShowPrompt(false);
       setDeferredPrompt(null);
-      console.log('تم تثبيت التطبيق بنجاح');
+      console.log('✅ App installed successfully');
     });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', () => {});
       window.removeEventListener('appinstalled', () => {});
     };
-  }, []);
+  }, [isIOS, isInstalled]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // ✅ إذا لم يكن هناك حدث تثبيت، اعرض تعليمات iOS
+      if (isIOS) {
+        alert(
+          'لتثبيت التطبيق على جهاز iPhone أو iPad:\n\n' +
+          '1. اضغط على زر المشاركة 📤\n' +
+          '2. اختر "إضافة إلى الشاشة الرئيسية" ➕\n' +
+          '3. اضغط على "إضافة" في الأعلى ✅'
+        );
+      }
+      return;
+    }
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     
     if (outcome === 'accepted') {
-      console.log('وافق المستخدم على التثبيت');
+      console.log('✅ User accepted the install prompt');
     } else {
-      console.log('رفض المستخدم التثبيت');
+      console.log('❌ User dismissed the install prompt');
     }
     
     setDeferredPrompt(null);
@@ -61,20 +86,21 @@ const InstallPrompt = () => {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('installPromptDismissed', 'true');
+    localStorage.setItem('installPromptDismissed', Date.now().toString());
   };
 
-  const handleIOSInstall = () => {
-    alert(
-      'لتثبيت التطبيق على جهاز iPhone أو iPad:\n\n' +
-      '1. اضغط على زر المشاركة 📤\n' +
-      '2. اختر "إضافة إلى الشاشة الرئيسية" ➕\n' +
-      '3. اضغط على "إضافة" في الأعلى ✅'
-    );
-  };
-
-  if (isInstalled || !showPrompt || localStorage.getItem('installPromptDismissed')) {
+  // ✅ لا تظهر إذا كان مثبتاً أو إذا تم الرفض سابقاً
+  if (isInstalled || !showPrompt) {
     return null;
+  }
+
+  // ✅ التحقق من آخر رفض (30 يوم)
+  const lastDismissed = localStorage.getItem('installPromptDismissed');
+  if (lastDismissed) {
+    const daysSinceDismissed = (Date.now() - parseInt(lastDismissed)) / (1000 * 60 * 60 * 24);
+    if (daysSinceDismissed < 30) {
+      return null;
+    }
   }
 
   return (
@@ -84,13 +110,13 @@ const InstallPrompt = () => {
         
         <div className="install-icon">📱</div>
         
-        <h3>ثبّت تطبيق إقرأ القرآن الكريم</h3>
+        <h3>ثبّت تطبيق القرآن الكريم</h3>
         
         <p className="install-description">
           يمكنك تثبيت التطبيق على جهازك للوصول السريع وقراءة القرآن بدون إنترنت
         </p>
         
-        {platform === 'ios' ? (
+        {isIOS ? (
           <div className="ios-install-instructions">
             <p>📱 لتثبيت التطبيق على iPhone/iPad:</p>
             <ol>
@@ -98,7 +124,7 @@ const InstallPrompt = () => {
               <li>اختر "إضافة إلى الشاشة الرئيسية" <span className="ios-icon">➕</span></li>
               <li>اضغط على "إضافة" ✅</li>
             </ol>
-            <button className="got-it-btn" onClick={handleDismiss}>
+            <button className="got-it-btn" onClick={handleInstallClick}>
               فهمت ✓
             </button>
           </div>

@@ -1,12 +1,16 @@
 // next.config.js
 const path = require('path')
-
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development' || process.env.VERCEL === '1',
+  // ✅ تفعيل PWA على Vercel
+  disable: process.env.NODE_ENV === 'development', // فقط في التطوير
   buildExcludes: [/middleware-manifest.json$/],
+  // ✅ مهم لـ Vercel
+  fallbacks: {
+    document: '/offline',
+  },
 })
 
 /** @type {import('next').NextConfig} */
@@ -25,11 +29,8 @@ const nextConfig = {
     ],
   },
 
-  // ✅ IMPORTANT: لا تستخدم standalone على Vercel
-  output: process.env.VERCEL === '1' ? undefined : 'standalone',
-  
-  // ❌ إزالة هذا تماماً
-  // outputFileTracingRoot: path.join(__dirname, '../'),
+  // ✅ إزالة output تماماً على Vercel
+  output: undefined,
 }
 
 module.exports = withPWA(nextConfig)
