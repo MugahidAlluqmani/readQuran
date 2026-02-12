@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إقرأ القرآن - لا يوجد اتصال</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+    }
+    
+    .offline-container {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .quran-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    h1 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #4a6491;
+    }
+    
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    
+    .offline-message {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border-right: 4px solid #ff9800;
+    }
+    
+    .offline-message p {
+      margin-bottom: 10px;
+    }
+    
+    .offline-message small {
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .retry-btn {
+      background: linear-gradient(135deg, #4a6491, #2c3e50);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(74, 100, 145, 0.3);
+      margin-bottom: 20px;
+    }
+    
+    .retry-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(74, 100, 145, 0.4);
+    }
+    
+    .retry-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .surah-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .surah-link {
+      background: #f8f9fa;
+      color: #4a6491;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      border: 1px solid #e9ecef;
+      transition: all 0.2s;
+    }
+    
+    .surah-link:hover {
+      background: #4a6491;
+      color: white;
+    }
+    
+    @media (max-width: 480px) {
+      .offline-container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      p {
+        font-size: 14px;
+      }
+      
+      .retry-btn {
+        padding: 12px 30px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="quran-icon">📖</div>
+    
+    <h1>لا يوجد اتصال بالإنترنت</h1>
+    
+    <p>نأسف، يبدو أنك غير متصل بالشبكة حالياً</p>
+    
+    <div class="offline-message">
+      <p>🔌 تحقق من اتصالك بالإنترنت</p>
+      <p>🔄 حاول تحديث الصفحة</p>
+      <p>📚 يمكنك قراءة السور المحفوظة مسبقاً</p>
+      <small>السور التالية متاحة للقراءة بدون إنترنت:</small>
+    </div>
+    
+    <button onclick="window.location.reload()" class="retry-btn">
+      🔄 إعادة المحاولة
+    </button>
+    
+    <div class="surah-links">
+      <a href="/surah/1" class="surah-link">الفاتحة</a>
+      <a href="/surah/36" class="surah-link">يس</a>
+      <a href="/surah/55" class="surah-link">الرحمن</a>
+      <a href="/surah/67" class="surah-link">الملك</a>
+      <a href="/surah/112" class="surah-link">الإخلاص</a>
+      <a href="/" class="surah-link">الرئيسية</a>
+    </div>
+  </div>
+</body>
+</html>

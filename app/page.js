@@ -1,100 +1,35 @@
+// app/page.js
 "use client"
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import NavigationBar from './components/NavigationBar';
 import SearchBottomSheet from './components/SearchBottomSheet';
-import FullAyahsView from './components/FullAyahsView';
-import '../public/styles/main.css'
+import '../public/styles/main.css';
 import '../public/styles/animations.css';
-import quranData from '../public/data/hafs_smart_v8.json';
-import { BookmarkUtils } from "./utils/bookmarkUtils"
-import { loadTafsirData } from './utils/tafsirParser';
 import '../public/styles/Home.css';
+import quranData from '../public/data/hafs_smart_v8.json';
+import InstallPrompt from './components/InstallPrompt';
 
-function Home() {
-  const [allAyahs, setAllAyahs] = useState([]);
-  const [displayAyahs, setDisplayAyahs] = useState([]);
-  const [tafsirData, setTafsirData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const fullAyahsViewRef = useRef(null);
-  // حالة البحث
-  const [showSearchSheet, setShowSearchSheet] = useState(false);
-  const [searchResult, setSearchResult] = useState(null);
-  
-  // حالة السورة الحالية
-  const [currentSurah, setCurrentSurah] = useState(1);
+export default function Home() {
+  const router = useRouter();
   const [surahList, setSurahList] = useState([]);
-  
-  // الإعدادات
-  const [showTranslation, setShowTranslation] = useState(true);
-  const [showTajweed, setShowTajweed] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [fontSize, setFontSize] = useState(100);
+  const [loading, setLoading] = useState(true);
+  const [showSearchSheet, setShowSearchSheet] = useState(false);
+  const [allAyahs, setAllAyahs] = useState([]);
+  const [recentSurahs, setRecentSurahs] = useState([]);
+  const [lastSurah, setLastSurah] = useState(null);
 
-  // دالة الانتقال لبداية السورة
-  const scrollToSurahStart = useCallback(() => {
-    // استخدام setTimeout لضمان تحديث DOM أولاً
-    setTimeout(() => {
-      if (fullAyahsViewRef.current) {
-        // استدعاء دالة في FullAyahsView للتمرير إلى البداية
-        fullAyahsViewRef.current.scrollToTop();
-      } else {
-        // طريقة احتياطية
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // البحث عن أول آية في السورة وتركيز عليها
-        if (displayAyahs.length > 0) {
-          const firstAyahId = displayAyahs[0].id;
-          // يمكن إضافة كود هنا للتركيز على أول آية
-          console.log('الانتقال إلى آية:', firstAyahId);
-        }
-      }
-    }, 100);
-  }, [displayAyahs]);
-
-  // تحميل الإعدادات
-  useEffect(() => {
-    loadSettings();
-  }, []);
-
-  const loadSettings = () => {
-    try {
-      const savedSettings = localStorage.getItem('quran_settings');
-      if (savedSettings) {
-        const settings = JSON.parse(savedSettings);
-        setDarkMode(settings.darkMode || false);
-        setFontSize(settings.fontSize || 100);
-        setShowTranslation(settings.showTranslation !== false);
-      }
-    } catch (error) {
-      console.error('Error loading settings:', error);
-    }
-  };
-
-  const saveSettings = () => {
-    try {
-      const settings = {
-        darkMode,
-        fontSize,
-        showTranslation,
-        showTajweed
-      };
-      localStorage.setItem('quran_settings', JSON.stringify(settings));
-    } catch (error) {
-      console.error('Error saving settings:', error);
-    }
-  };
-
-  // تحميل البيانات الأساسية
+  // تحميل البيانات
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [ayahsData, tafsirData] = await Promise.all([
-          fetch('/data/hafs_smart_v8.json').then(res => res.json()),
-          loadTafsirData()
-        ]);
+        let ayahsData = quranData;
+        if (!ayahsData || ayahsData.length === 0) {
+          const response = await fetch('/data/hafs_smart_v8.json');
+          ayahsData = await response.json();
+        }
         
         setAllAyahs(ayahsData);
-        setTafsirData(tafsirData);
         
         // إنشاء قائمة السور
         const uniqueSurahs = [];
@@ -114,16 +49,12 @@ function Home() {
         
         setSurahList(uniqueSurahs.sort((a, b) => a.number - b.number));
         
-        // تحميل السورة الأولى افتراضياً
-        loadSurah(1);
+        // تحميل آخر سورة من localStorage
+        loadRecentSurahs();
+        loadLastSurah();
         
       } catch (error) {
         console.error('Error loading data:', error);
-        // استخدام البيانات المحلية
-        if (quranData && Array.isArray(quranData)) {
-          setAllAyahs(quranData);
-          loadSurah(1);
-        }
       } finally {
         setLoading(false);
       }
@@ -132,167 +63,46 @@ function Home() {
     loadData();
   }, []);
 
-  // دالة لتحميل سورة معينة
-  // تحميل سورة معينة مع التمرير للأعلى
-  const loadSurah = useCallback((surahNumber) => {
-    if (!allAyahs.length) return;
-    
-    const surahAyahs = allAyahs.filter(ayah => ayah.sura_no === surahNumber);
-    
-    if (surahAyahs.length > 0) {
-      setDisplayAyahs(surahAyahs);
-      setCurrentSurah(surahNumber);
-      
-      setSearchResult({
-        surahName: surahAyahs[0].sura_name_ar,
-        from: 1,
-        to: surahAyahs[surahAyahs.length - 1].aya_no,
-        total: surahAyahs.length,
-        surahNumber: surahNumber
-      });
-      
-      // تمرير للأعلى بعد تحميل السورة
-      setTimeout(() => {
-        scrollToSurahStart();
-      }, 200);
-    }
-  }, [allAyahs, scrollToSurahStart]);
-
-  // البحث عن سورة محددة
-  const handleSearch = useCallback((surahNumber, fromAyah, toAyah) => {
-    setShowSearchSheet(false);
-    
-    const surahAyahs = allAyahs.filter(ayah => 
-      ayah.sura_no === parseInt(surahNumber)
-    );
-    
-    if (surahAyahs.length > 0) {
-      // إذا تم تحديد نطاق محدد
-      if (fromAyah && toAyah) {
-        const startIndex = Math.max(1, parseInt(fromAyah));
-        const endIndex = Math.min(
-          surahAyahs[surahAyahs.length - 1].aya_no, 
-          parseInt(toAyah)
-        );
-        
-        const filteredAyahs = surahAyahs.filter(
-          ayah => ayah.aya_no >= startIndex && ayah.aya_no <= endIndex
-        );
-        
-        setDisplayAyahs(filteredAyahs);
-        
-        setSearchResult({
-          surahName: surahAyahs[0].sura_name_ar,
-          from: startIndex,
-          to: endIndex,
-          total: filteredAyahs.length,
-          surahNumber: surahNumber
-        });
-        
-      } else {
-        // السورة كاملة
-        setDisplayAyahs(surahAyahs);
-        
-        setSearchResult({
-          surahName: surahAyahs[0].sura_name_ar,
-          from: 1,
-          to: surahAyahs[surahAyahs.length - 1].aya_no,
-          total: surahAyahs.length,
-          surahNumber: surahNumber
-        });
-      }
-      
-      setCurrentSurah(parseInt(surahNumber));
-      
-      // تمرير للأعلى بعد البحث
-      setTimeout(() => {
-        scrollToSurahStart();
-      }, 300);
-    }
-  }, [allAyahs, scrollToSurahStart]);
-
-  // تحميل كل القرآن دفعة واحدة (مع تحذير للأداء)
-  const handleShowAllQuran = useCallback(() => {
-    if (allAyahs.length > 2000) {
-      if (window.confirm('تحميل كل القرآن قد يؤثر على أداء التطبيق. هل تريد المتابعة؟')) {
-        setDisplayAyahs(allAyahs.slice(0, 2000)); // تحديد حد معقول
-        setSearchResult({
-          surahName: 'المصحف الشريف (منظور محدود)',
-          from: 1,
-          to: allAyahs[1999]?.aya_no || allAyahs[allAyahs.length - 1]?.aya_no,
-          total: 2000,
-          surahNumber: 1
-        });
-        setCurrentSurah(1);
-      }
-    } else {
-      setDisplayAyahs(allAyahs);
-      setSearchResult({
-        surahName: 'المصحف الشريف',
-        from: 1,
-        to: allAyahs[allAyahs.length - 1]?.aya_no,
-        total: allAyahs.length,
-        surahNumber: 1
-      });
-      setCurrentSurah(1);
-    }
-  }, [allAyahs]);
-
-  // تحميل آخر سورة تمت زيارتها
-  const handleContinueFromLast = useCallback(() => {
+  // تحميل السور الأخيرة
+  const loadRecentSurahs = () => {
     try {
-      const savedPosition = localStorage.getItem('quran_last_position');
-      if (savedPosition) {
-        const position = JSON.parse(savedPosition);
-        loadSurah(position.surahNumber);
+      const saved = localStorage.getItem('quran_recent_surahs');
+      if (saved) {
+        setRecentSurahs(JSON.parse(saved));
       }
     } catch (error) {
-      console.error('Error loading last position:', error);
+      console.error('Error loading recent surahs:', error);
     }
-  }, [loadSurah]);
+  };
 
-  // الانتقال للسورة التالية
-  const goToNextSurah = useCallback(() => {
-    if (currentSurah < 114) {
-      loadSurah(currentSurah + 1);
-      // الانتقال لبداية السورة الجديدة
-      scrollToSurahStart();
+  // تحميل آخر سورة
+  const loadLastSurah = () => {
+    try {
+      const saved = localStorage.getItem('quran_last_surah');
+      if (saved) {
+        setLastSurah(JSON.parse(saved));
+      }
+    } catch (error) {
+      console.error('Error loading last surah:', error);
     }
-  }, [currentSurah, loadSurah, scrollToSurahStart]);
+  };
 
-  // الانتقال للسورة السابقة
-  const goToPrevSurah = useCallback(() => {
-    if (currentSurah > 1) {
-      loadSurah(currentSurah - 1);
-      // الانتقال لبداية السورة الجديدة
-      scrollToSurahStart();
+  // الذهاب إلى سورة
+  const goToSurah = (surahNumber) => {
+    router.push(`/surah/${surahNumber}`);
+  };
+
+  // البحث
+  const handleSearch = (surahNumber, fromAyah, toAyah) => {
+    setShowSearchSheet(false);
+    router.push(`/surah/${surahNumber}?from=${fromAyah}&to=${toAyah}`);
+  };
+
+  // العودة لآخر سورة
+  const goToLastSurah = () => {
+    if (lastSurah) {
+      router.push(`/surah/${lastSurah.number}`);
     }
-  }, [currentSurah, loadSurah, scrollToSurahStart]);
-
-  // الحصول على معلومات السورة الحالية
-  const getCurrentSurahInfo = () => {
-    return surahList.find(s => s.number === currentSurah);
-  };
-
-  // معالجات الإعدادات
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    saveSettings();
-  };
-
-  const increaseFontSize = () => {
-    setFontSize(prev => Math.min(150, prev + 10));
-    saveSettings();
-  };
-
-  const decreaseFontSize = () => {
-    setFontSize(prev => Math.max(70, prev - 10));
-    saveSettings();
-  };
-
-  const toggleTranslation = () => {
-    setShowTranslation(!showTranslation);
-    saveSettings();
   };
 
   if (loading) {
@@ -301,175 +111,92 @@ function Home() {
         <div className="loading-content">
           <div className="quran-icon">📖</div>
           <div className="spinner"></div>
-          <h2>جاري تحميل المصحف الشريف</h2>
-          <p>يرجى الانتظار...</p>
+          <h2>القرآن الكريم</h2>
+          <p>جاري التحميل...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`home-container ${darkMode ? 'dark-mode' : ''}`}>
-      {/* شريط الأدوات العلوي */}
-      <div className="top-toolbar">
-        <div className="toolbar-left">
-          <button 
-            className="toolbar-btn search-btn"
-            onClick={() => setShowSearchSheet(true)}
-            title="بحث في القرآن"
-          >
-            🔍 بحث
-          </button>
-          
-          <button 
-            className="toolbar-btn all-quran-btn"
-            onClick={handleShowAllQuran}
-            title="عرض كل القرآن"
-          >
-            📖 الكل
-          </button>
-          
-          <button 
-            className="toolbar-btn continue-btn"
-            onClick={handleContinueFromLast}
-            title="الاستمرار من حيث توقفت"
-          >
-            🔄 استمرار
-          </button>
-        </div>
-        
-        
-        <div className="toolbar-right">
-          <div className="font-controls">
-            <button 
-              className="font-btn smaller"
-              onClick={decreaseFontSize}
-              title="تصغير الخط"
-            >
-              A-
-            </button>
-            <span className="font-size">{fontSize}%</span>
-            <button 
-              className="font-btn larger"
-              onClick={increaseFontSize}
-              title="تكبير الخط"
-            >
-              A+
-            </button>
-          </div>
-          
-          <button 
-            className={`toolbar-btn dark-mode-btn ${darkMode ? 'active' : ''}`}
-            onClick={toggleDarkMode}
-            title={darkMode ? 'الوضع النهاري' : 'الوضع الليلي'}
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-          
-          <button 
-            className={`toolbar-btn translation-btn ${showTranslation ? 'active' : ''}`}
-            onClick={toggleTranslation}
-            title={showTranslation ? 'إخفاء الترجمة' : 'إظهار الترجمة'}
-          >
-            🌐
-          </button>
-        </div>
-      </div>
+<>
+<InstallPrompt />
+</>,
+    <div className="home-page">
+      <header className="home-header">
+        <h1 className="home-title">القرآن الكريم</h1>
+        <p className="home-subtitle">اختر سورة للقراءة</p>
+      </header>
 
-      {/* أزرار التحكم في السور */}
-      <div className="surah-navigation-bar">
-        <div className="surah-nav-container">
-          <button 
-            className="surah-nav-btn prev-surah-btn"
-            onClick={goToPrevSurah}
-            disabled={currentSurah === 1}
-            title="السورة السابقة"
-          >
-            السورة السابقة: 
-            {surahList.find(s => s.number === currentSurah - 1)?.name || currentSurah - 1}
-          </button>
-          
-          <div className="current-surah-info">
-            <div className="surah-number-badge">{currentSurah}</div>
-            <div className="surah-details">
-              <h3 className="surah-name-display">{getCurrentSurahInfo()?.name || ''}</h3>
-              <div className="surah-meta">
-                <span className="surah-ayahs">{getCurrentSurahInfo()?.totalAyahs || 0} آية</span>
-                <span className="surah-type">
-                  {currentSurah <= 114 ? 
-                    (currentSurah <= 92 ? 'مكية' : 'مدنية') : ''}
+      <main className="home-main">
+        {/* آخر سورة */}
+        {lastSurah && (
+          <div className="last-surah-section">
+            <h2 className="section-title">🔄 متابعة القراءة</h2>
+            <button 
+              className="last-surah-card"
+              onClick={() => goToSurah(lastSurah.number)}
+            >
+              <div className="last-surah-icon">🕯️</div>
+              <div className="last-surah-info">
+                <span className="last-surah-label">آخر زيارة:</span>
+                <span className="last-surah-name">{lastSurah.name}</span>
+                <span className="last-surah-time">
+                  {new Date(lastSurah.visitedAt).toLocaleDateString('ar-EG')}
                 </span>
               </div>
-            </div>
-          </div>
-          
-          <button 
-            className="surah-nav-btn next-surah-btn"
-            onClick={goToNextSurah}
-            disabled={currentSurah === 114}
-            title="السورة التالية"
-            
-          >
-            <span className="btn-text">
-              السورة التالية: {surahList.find(s => s.number === currentSurah + 1)?.name || currentSurah + 1}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* قائمة السور السريعة */}
-      <div className="quick-surahs-bar">
-        <div className="quick-surahs-container">
-          <span className="quick-title">بحث سريع:</span>
-          {[1, 2, 36, 55, 56, 67, 112, 113, 114].map(surahNum => {
-            const surah = surahList.find(s => s.number === surahNum);
-            return surah ? (
-              <button
-                key={surahNum}
-                className={`quick-surah-btn ${currentSurah === surahNum ? 'active' : ''}`}
-                onClick={() => loadSurah(surahNum)}
-                title={surah.name}
-              >
-                
-                <span className="quick-name">
-                  {surah.name.length > 10 
-                    ? surah.name.substring(0, 8) + '..' 
-                    : surah.name}
-                </span>
-              </button>
-            ) : null;
-          })}
-        </div>
-      </div>
-
-      {/* المحتوى الرئيسي */}
-      <main className="main-content">
-        {displayAyahs.length > 0 ? (
-          <FullAyahsView 
-            ref={fullAyahsViewRef}
-            ayahs={displayAyahs}
-            searchResult={searchResult}
-            showTranslation={showTranslation}
-            showTajweed={showTajweed}
-            onBack={handleShowAllQuran}
-            tafsirData={tafsirData}
-          />
-        ) : (
-          <div className="no-ayahs-message">
-            {loadSurah(1)}
+              <span className="last-surah-arrow">◀</span>
+            </button>
           </div>
         )}
+
+        {/* السور الأخيرة */}
+        {recentSurahs.length > 0 && (
+          <div className="recent-surahs-section">
+            <h2 className="section-title">🕒 السور الأخيرة</h2>
+            <div className="recent-grid">
+              {recentSurahs.slice(0, 5).map(surah => (
+                <button
+                  key={surah.number}
+                  className="recent-surah-card"
+                  onClick={() => goToSurah(surah.number)}
+                >
+                  <span className="recent-surah-number">{surah.number}</span>
+                  <span className="recent-surah-name">{surah.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* قائمة جميع السور */}
+        <div className="all-surahs-section">
+          <h2 className="section-title">📖 فهرس السور</h2>
+          <div className="surahs-grid">
+            {surahList.map(surah => (
+              <button
+                key={surah.number}
+                className="surah-card"
+                onClick={() => goToSurah(surah.number)}
+              >
+                <span className="surah-card-number">{surah.number}</span>
+                <div className="surah-card-info">
+                  <span className="surah-card-name">{surah.name}</span>
+                  <span className="surah-card-ayahs">{surah.totalAyahs} آية</span>
+                </div>
+                <span className="surah-card-arrow">◀</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </main>
-
-
 
       {/* شريط التنقل السفلي */}
       <NavigationBar 
         onSearchClick={() => setShowSearchSheet(true)}
-        onHomeClick={handleShowAllQuran}
+        onHomeClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         onSettingsClick={() => {}}
-        showFullView={true}
-        onToggleView={toggleTranslation}
+        showFullView={false}
       />
 
       {/* Search Bottom Sheet */}
@@ -479,47 +206,6 @@ function Home() {
         onSearch={handleSearch}
         ayahs={allAyahs}
       />
-
-      {/* أزرار التصدير/الاستيراد */}
-      <div className="data-controls">
-        <button 
-          className="data-btn export-btn"
-          onClick={BookmarkUtils.exportData}
-          title="تصدير البيانات"
-        >
-          📤 تصدير
-        </button>
-        
-        <button 
-          className="data-btn import-btn"
-          onClick={() => document.getElementById('import-input').click()}
-          title="استيراد البيانات"
-        >
-          📥 استيراد
-        </button>
-        
-        <input
-          id="import-input"
-          type="file"
-          accept=".json"
-          style={{ display: 'none' }}
-          onChange={async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              try {
-                await BookmarkUtils.importData(file);
-                alert('تم استيراد البيانات بنجاح');
-                window.location.reload();
-              } catch (error) {
-                alert(`خطأ في الاستيراد: ${error.message}`);
-              }
-            }
-            e.target.value = '';
-          }}
-        />
-      </div>
     </div>
   );
 }
-
-export default Home;
