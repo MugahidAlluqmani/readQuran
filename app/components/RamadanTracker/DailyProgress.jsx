@@ -59,7 +59,7 @@ const DailyProgress = ({
 
       <div className="add-reading">
         <div className="pages-input-group">
-          <label>أضف قراءة:</label>
+          <label>اضف عدد الصفحات اللتي تمت قراءتها</label>
           <div className="input-controls">
             <button 
               onClick={() => setPagesToAdd(prev => Math.max(1, prev - 1))}

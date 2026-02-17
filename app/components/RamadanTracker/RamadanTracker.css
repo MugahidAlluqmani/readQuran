@@ -837,3 +837,102 @@
       margin-right: 0;
     }
   }
+  /* إضافات لـ RamadanBadge.css */
+
+.ramadan-badge {
+  /* الأنماط الحالية */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ramadan-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 100, 145, 0.3);
+}
+
+.ramadan-badge.active {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  animation: pulse 2s infinite;
+}
+
+.ramadan-badge.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.ramadan-badge.error {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  opacity: 0.9;
+}
+
+.badge-days-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-days {
+  font-weight: bold;
+  color: #ff9800;
+}
+
+.badge-status {
+  font-size: 11px;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.badge-additional {
+  font-size: 10px;
+  opacity: 0.7;
+  display: block;
+  margin-top: 2px;
+}
+
+.badge-progress {
+  margin-top: 8px;
+}
+
+.progress-bar {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+.progress-text {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+  .badge-days-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .badge-status {
+    font-size: 10px;
+  }
+}

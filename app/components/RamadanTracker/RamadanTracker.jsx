@@ -1,6 +1,7 @@
 // components/RamadanTracker/RamadanTracker.jsx
 'use client'
 import React, { useState, useEffect, useCallback } from 'react';
+import { toHijri, toGregorian } from 'hijri-converter';
 import DailyProgress from './DailyProgress';
 import JuzProgress from './JuzProgress';
 import Statistics from './Statistics';
@@ -218,13 +219,76 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
   };
 
   // حساب الأيام المتبقية
-  const getRemainingDays = () => {
-    if (!ramadanData.endDate) return 0;
-    const end = new Date(ramadanData.endDate);
-    const today = new Date();
-    const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
-    return Math.max(0, diff);
-  };
+  const getRemainingDays = useCallback(() => {
+    try {
+      const today = new Date();
+      
+      // الحصول على التاريخ الهجري لليوم
+      const hijriToday = toHijri(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        today.getDate()
+      );
+  
+      // تحديد هدف التاريخ (بداية أو نهاية رمضان)
+      let targetHijriYear = hijriToday.hy;
+      let targetHijriMonth = 9; // رمضان
+      let targetHijriDay;
+      let isRamadan = false;
+      
+      // المنطق: إذا كنا في رمضان، نحسب الأيام حتى نهايته
+      // وإلا نحسب الأيام حتى بداية رمضان القادم
+      if (hijriToday.hm === 9) {
+        // نحن في رمضان - نحسب الأيام حتى نهايته
+        targetHijriDay = 30; // آخر يوم في رمضان (يمكن تحسينه لمعرفة 29 أو 30)
+        isRamadan = true;
+      } else if (hijriToday.hm < 9) {
+        // قبل رمضان - نحسب الأيام حتى بداية رمضان في نفس السنة
+        targetHijriDay = 1;
+      } else {
+        // بعد رمضان - نحسب الأيام حتى رمضان السنة القادمة
+        targetHijriYear += 1;
+        targetHijriDay = 1;
+      }
+  
+      // تحويل التاريخ الهجري المستهدف إلى ميلادي
+      const targetGregorian = toGregorian(
+        targetHijriYear,
+        targetHijriMonth,
+        targetHijriDay
+      );
+  
+      const targetDate = new Date(
+        targetGregorian.gy,
+        targetGregorian.gm - 1,
+        targetGregorian.gd
+      );
+  
+      // حساب الفرق بالأيام
+      const diffTime = targetDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // إذا كنا في رمضان، نضمن عدم ظهور أيام سلبية
+      if (isRamadan) {
+        return Math.max(0, diffDays);
+      }
+      
+      // للفترات الأخرى، نضمن أرقام موجبة
+      return diffDays > 0 ? diffDays : 0;
+  
+    } catch (error) {
+      console.error('Error calculating remaining days:', error);
+      
+      // Fallback: حساب تقريبي باستخدام التاريخ الميلادي
+      const fallbackEnd = ramadanData?.endDate 
+        ? new Date(ramadanData.endDate)
+        : new Date(new Date().getFullYear(), 8, 1); // سبتمبر كتقريب
+      
+      const today = new Date();
+      const fallbackDiff = Math.ceil((fallbackEnd - today) / (1000 * 60 * 60 * 24));
+      return Math.max(0, fallbackDiff);
+    }
+  }, [ramadanData]);
 
   const progress = calculateOverallProgress();
   const remainingDays = getRemainingDays();
@@ -239,7 +303,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
         <span className="ramadan-icon">🌙</span>
         <span className="ramadan-text">رمضان</span>
         {ramadanData.currentStreak > 0 && (
-          <span className="streak-badge">{ramadanData.currentStreak}🔥</span>
+          <span className="streak-badge">{ramadanData.currentStreak}👍🏻</span>
         )}
       </button>
     );
@@ -311,10 +375,10 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
         <div className="ramadan-tips">
           <h4>💡 نصائح سريعة</h4>
           <ul>
-            <li>اقرأ 20 صفحة يومياً لختم القرآن في 30 يوم</li>
-            <li>خصص وقتاً بعد صلاة التراويح للقراءة</li>
-            <li>استخدم التذكيرات للمواظبة على القراءة</li>
-            <li>شارك تقدمك مع العائلة والأصدقاء</li>
+           <li> خطة الختمة الواحدة: اقرأ جزءاً يومياً، مقسماً على الصلوات الخمس (4 صفحات لكل صلاة).</li>
+           <li>استغلال الأوقات البينية: اقرأ في أوقات الانتظار، وبعد صلاة التراويح، وقبل السحور.</li>
+           <li> التدرج والالتزام: تعوّد على القراءة اليومية لسهولة الختم، ولا تحمل نفسك فوق طاقتها لتجنب النتيجة العكسية.</li>
+            <li>الدعاء: الزم دعاء "اللهم أعني على ذكرك وشكرك وحسن عبادتك". </li>
           </ul>
         </div>
       </div>
