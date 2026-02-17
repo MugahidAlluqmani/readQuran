@@ -9,6 +9,7 @@ import '../public/styles/animations.css';
 import '../public/styles/Home.css';
 import quranData from '../public/data/hafs_smart_v8.json';
 import InstallPrompt from './components/InstallPrompt';
+import RamadanTracker from "./components/RamadanTracker/RamadanTracker"
 
 export default function Home() {
   const router = useRouter();
@@ -204,6 +205,9 @@ export default function Home() {
         onSearch={handleSearch}
         ayahs={allAyahs}
       />
+
+      {/* محتوى الصفحة */}
+      <RamadanTracker />
     </div>
   );
 }

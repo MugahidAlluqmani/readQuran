@@ -1,5 +1,7 @@
 import './globals.css'
 import InstallPrompt from './components/InstallPrompt'
+import RamadanTracker from "./components/RamadanTracker/RamadanTracker"
+import { Analytics } from "@vercel/analytics/next"
 
 import { Metadata } from 'next'
 
@@ -72,7 +74,8 @@ export default function RootLayout({ children }) {
       <body>
         {children}
       <InstallPrompt /> {/* ✅ هنا يظهر في كل الصفحات */}
-
+      <RamadanTracker/>
+      <Analytics/>
       </body>
     </html>
   )

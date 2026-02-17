@@ -1,0 +1,839 @@
+/* components/RamadanTracker/RamadanTracker.css */
+
+/* الزر العائم */
+.ramadan-floating-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: linear-gradient(135deg, #2c3e50, #4a6491);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    animation: pulse 2s infinite;
+    transition: all 0.3s;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  .ramadan-floating-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  
+  .ramadan-icon {
+    font-size: 20px;
+  }
+  
+  .streak-badge {
+    background: #ff9800;
+    color: #2c3e50;
+    padding: 2px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    margin-right: 5px;
+  }
+  
+  /* التراكب */
+  .ramadan-tracker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+  }
+  
+  .ramadan-tracker {
+    background: white;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    direction: rtl;
+  }
+  
+  /* الهيدر */
+  .tracker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .header-title h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 24px;
+  }
+  
+  .ramadan-year {
+    color: #4a6491;
+    margin: 5px 0 0 0;
+    font-size: 14px;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  
+  .close-btn:hover {
+    background: #f0f0f0;
+    color: #f44336;
+  }
+  
+  /* الإحصائيات الرئيسية */
+  .main-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 15px 10px;
+    text-align: center;
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4a6491;
+    margin-bottom: 5px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  /* التقدم اليومي */
+  .daily-progress {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .section-header h3 {
+    margin: 0;
+    color: #2c3e50;
+  }
+  
+  .date {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .progress-circle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .progress-circle {
+    width: 120px;
+    height: 120px;
+    position: relative;
+  }
+  
+  .progress-circle svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  
+  .progress-bg {
+    fill: none;
+    stroke: #e9ecef;
+    stroke-width: 10;
+  }
+  
+  .progress-fill {
+    fill: none;
+    stroke: #4a6491;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s;
+  }
+  
+  .progress-circle text {
+    fill: #2c3e50;
+    font-size: 20px;
+    font-weight: bold;
+    transform: rotate(90deg) translateX(6px) translateY(-95px);
+  }
+  
+  .progress-stats {
+    text-align: center;
+  }
+  
+  .pages-read {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #4a6491;
+  }
+  
+  .pages-label {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  /* إضافة قراءة */
+  .add-reading {
+    margin-top: 20px;
+  }
+  
+  .pages-input-group {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .pages-input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #666;
+  }
+  
+  .input-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .control-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .control-btn:hover {
+    background: #4a6491;
+    color: white;
+    border-color: #4a6491;
+  }
+  
+  .input-controls input {
+    flex: 1;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+  
+  .add-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  }
+  
+  /* الأزرار السريعة */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .quick-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .quick-btn.complete-juz {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+  }
+  
+  .quick-btn.reset-btn {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #ddd;
+  }
+  
+  .quick-btn.goal-btn {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #ddd;
+  }
+  
+  .quick-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .quick-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* رسالة الإكتمال */
+  .daily-complete-message {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 15px;
+    animation: slideDown 0.5s ease;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* معلومات آخر قراءة */
+  .current-reading {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  
+  .reading-label {
+    color: #666;
+    margin-left: 5px;
+  }
+  
+  .reading-info {
+    color: #4a6491;
+    font-weight: bold;
+  }
+  
+  /* تقدم الأجزاء */
+  .juz-progress {
+    margin-bottom: 30px;
+  }
+  
+  .completed-count {
+    background: #4a6491;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+  
+  .juz-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .juz-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  
+  .juz-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 100, 145, 0.1);
+  }
+  
+  .juz-card.completed {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    border-color: #2E7D32;
+  }
+  
+  .juz-number {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .juz-name {
+    font-size: 10px;
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .completed-date {
+    font-size: 8px;
+    opacity: 0.9;
+    display: block;
+  }
+  
+  /* الإحصائيات المتقدمة */
+  .statistics {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-value-large {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    color: #4a6491;
+  }
+  
+  .best-day {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .best-day h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+  }
+  
+  .best-day-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .best-date {
+    color: #4a6491;
+    font-weight: bold;
+  }
+  
+  .best-pages {
+    background: #4CAF50;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+  }
+  
+  /* الأسبوع */
+  .weekly-summary {
+    margin-bottom: 25px;
+  }
+  
+  .week-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 120px;
+    margin-top: 15px;
+  }
+  
+  .day-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30px;
+  }
+  
+  .day-bar {
+    width: 20px;
+    background: linear-gradient(to top, #4a6491, #6d8ac0);
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    transition: height 0.3s;
+  }
+  
+  .bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #666;
+  }
+  
+  .day-label {
+    margin-top: 5px;
+    font-size: 10px;
+    color: #666;
+  }
+  
+  /* التوقعات */
+  .prediction {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 15px;
+    border-radius: 15px;
+  }
+  
+  .prediction-info p {
+    margin: 0 0 10px 0;
+    color: #666;
+  }
+  
+  .prediction-date {
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .days {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .date {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .no-data {
+    color: #999;
+    font-style: italic;
+  }
+  
+  /* إعدادات التذكير */
+  .reminder-settings {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .reminder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .reminder-header h4 {
+    margin: 0;
+    color: #2c3e50;
+  }
+  
+  .toggle-icon {
+    transition: transform 0.3s;
+    color: #666;
+  }
+  
+  .toggle-icon.open {
+    transform: rotate(180deg);
+  }
+  
+  .reminder-content {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  /* Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #4a6491;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
+  .reminder-toggle {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .reminder-time {
+    margin-bottom: 20px;
+  }
+  
+  .reminder-time label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+  }
+  
+  .reminder-time input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  
+  .reminder-days {
+    margin-bottom: 20px;
+  }
+  
+  .reminder-days label {
+    display: block;
+    margin-bottom: 10px;
+    color: #666;
+  }
+  
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  
+  .day-btn {
+    padding: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .day-btn.active {
+    background: #4a6491;
+    color: white;
+    border-color: #4a6491;
+  }
+  
+  .reminder-type {
+    margin-bottom: 20px;
+  }
+  
+  .reminder-type label {
+    display: block;
+    margin-bottom: 10px;
+    color: #666;
+  }
+  
+  .type-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  .type-btn {
+    padding: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .type-btn.active {
+    background: #4a6491;
+    color: white;
+    border-color: #4a6491;
+  }
+  
+  .test-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .test-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+  }
+  
+  /* نصائح رمضان */
+  .ramadan-tips {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 20px;
+    padding: 20px;
+  }
+  
+  .ramadan-tips h4 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+  }
+  
+  .ramadan-tips ul {
+    margin: 0;
+    padding-right: 20px;
+    color: #666;
+    line-height: 1.8;
+  }
+  
+  .ramadan-tips li {
+    margin-bottom: 5px;
+  }
+  
+  /* تحميل */
+  .loading-spinner {
+    text-align: center;
+    padding: 40px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4a6491;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* تحسينات للأجهزة المحمولة */
+  @media (max-width: 768px) {
+    .ramadan-tracker {
+      padding: 20px;
+      width: 95%;
+    }
+  
+    .main-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .juz-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .ramadan-floating-btn {
+      bottom: 70px;
+      right: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  
+    .ramadan-floating-btn .ramadan-text {
+      display: none;
+    }
+  
+    .ramadan-floating-btn .streak-badge {
+      margin-right: 0;
+    }
+  }
