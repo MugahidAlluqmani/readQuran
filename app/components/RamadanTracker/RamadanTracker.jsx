@@ -7,6 +7,7 @@ import JuzProgress from './JuzProgress';
 import Statistics from './Statistics';
 import ReminderSettings from './ReminderSettings';
 import './RamadanTracker.css';
+import { saveData, loadData, cleanOldData } from '../../utils/storage';
 
 const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
   const [ramadanData, setRamadanData] = useState({
@@ -15,7 +16,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
     endDate: null,
     totalKhatma: 0,
     targetKhatma: 1,
-    dailyGoal: 20, // صفحات
+    dailyGoal: 20,
     readingHistory: [],
     juzProgress: Array(30).fill(0).map((_, i) => ({
       juz: i + 1,
@@ -26,6 +27,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
     currentStreak: 0,
     longestStreak: 0,
     lastReadDate: null,
+    totalPagesRead: 0, // ✅ إضافة المجموع الكلي
     reminders: {
       enabled: true,
       time: '20:00',
@@ -34,24 +36,67 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
     }
   });
 
-  const [showTracker, setShowTracker] = useState(false);
   const [todayProgress, setTodayProgress] = useState({
     date: new Date().toDateString(),
     pages: 0,
     juz: [],
     completed: false
   });
+  const [showTracker, setShowTracker] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const storageKey = `ramadan_${userId}`;
+  const todayKey = `ramadan_today_${userId}`;
 
-  // تحميل بيانات رمضان من localStorage
-  useEffect(() => {
-    loadRamadanData();
-    calculateRamadanDates();
-  }, []);
+    // تحميل البيانات عند بدء التشغيل
+    useEffect(() => {
+      const loadStoredData = async () => {
+        setLoading(true);
+        
+        // تنظيف البيانات القديمة
+        await cleanOldData();
+        
+        // تحميل بيانات رمضان
+        const savedData = await loadData(storageKey);
+        if (savedData) {
+          setRamadanData(savedData);
+        }
+        
+        // تحميل تقدم اليوم
+        const savedToday = await loadData(todayKey);
+        if (savedToday) {
+          // التحقق إذا كان التاريخ هو اليوم
+          if (savedToday.date === new Date().toDateString()) {
+            setTodayProgress(savedToday);
+          }
+        }
+        
+        setLoading(false);
+      };
+      
+      loadStoredData();
+    }, [userId]);
 
   // حفظ البيانات عند التغيير
   useEffect(() => {
-    saveRamadanData();
-  }, [ramadanData]);
+    if (!loading) {
+      const saveTimeout = setTimeout(async () => {
+        await saveData(storageKey, ramadanData);
+      }, 1000); // تأخير 1 ثانية لمنع الحفظ المتكرر
+      
+      return () => clearTimeout(saveTimeout);
+    }
+  }, [ramadanData, loading]);
+
+    // حفظ تقدم اليوم
+    useEffect(() => {
+      if (!loading) {
+        const saveTimeout = setTimeout(async () => {
+          await saveData(todayKey, todayProgress);
+        }, 1000);
+        
+        return () => clearTimeout(saveTimeout);
+      }
+    }, [todayProgress, loading]);
 
   const loadRamadanData = () => {
     try {
@@ -90,8 +135,6 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
 
   // إضافة قراءة جديدة
   const addReading = useCallback((pages, juz) => {
-    const today = new Date().toDateString();
-    
     setTodayProgress(prev => {
       const newPages = prev.pages + pages;
       const newJuz = [...prev.juz];
@@ -107,37 +150,39 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
       };
     });
 
-    // تحديث تاريخ القراءة
-    const today2 = new Date();
-    const lastRead = ramadanData.lastReadDate ? new Date(ramadanData.lastReadDate) : null;
-    
-    // حساب الـ streak
-    let newStreak = ramadanData.currentStreak;
-    if (lastRead) {
-      const diffDays = Math.floor((today2 - lastRead) / (1000 * 60 * 60 * 24));
-      if (diffDays === 1) {
-        newStreak += 1;
-      } else if (diffDays > 1) {
+    setRamadanData(prev => {
+      const today = new Date();
+      const lastRead = prev.lastReadDate ? new Date(prev.lastReadDate) : null;
+      
+      // حساب الـ streak
+      let newStreak = prev.currentStreak;
+      if (lastRead) {
+        const diffDays = Math.floor((today - lastRead) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+          newStreak += 1;
+        } else if (diffDays > 1) {
+          newStreak = 1;
+        }
+      } else {
         newStreak = 1;
       }
-    } else {
-      newStreak = 1;
-    }
 
-    setRamadanData(prev => ({
-      ...prev,
-      readingHistory: [
-        ...prev.readingHistory,
-        {
-          date: today2.toISOString(),
-          pages,
-          juz
-        }
-      ],
-      currentStreak: newStreak,
-      longestStreak: Math.max(newStreak, prev.longestStreak),
-      lastReadDate: today2.toISOString()
-    }));
+      return {
+        ...prev,
+        totalPagesRead: prev.totalPagesRead + pages,
+        readingHistory: [
+          ...prev.readingHistory,
+          {
+            date: today.toISOString(),
+            pages,
+            juz
+          }
+        ],
+        currentStreak: newStreak,
+        longestStreak: Math.max(newStreak, prev.longestStreak),
+        lastReadDate: today.toISOString()
+      };
+    });
 
     // إذا أكملت جزء
     if (juz) {
@@ -146,7 +191,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
   }, [ramadanData.dailyGoal]);
 
   // إكمال جزء
-  const completeJuz = (juzNumber) => {
+  const completeJuz = useCallback((juzNumber) => {
     setRamadanData(prev => {
       const newJuzProgress = [...prev.juzProgress];
       if (!newJuzProgress[juzNumber - 1].completed) {
@@ -173,26 +218,66 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
       }
       return { ...prev, juzProgress: newJuzProgress };
     });
-  };
+  }, []);
 
   // إعادة تعيين اليوم
-  const resetToday = () => {
-    setTodayProgress({
+  const resetToday = useCallback(() => {
+    const newToday = {
       date: new Date().toDateString(),
       pages: 0,
       juz: [],
       completed: false
-    });
-  };
+    };
+    setTodayProgress(newToday);
+    saveData(todayKey, newToday);
+  }, []);
 
   // تحديث الهدف اليومي
-  const updateDailyGoal = (goal) => {
+  const updateDailyGoal = useCallback((goal) => {
     setRamadanData(prev => ({
       ...prev,
       dailyGoal: goal
     }));
-  };
+  }, []);
 
+    // تصدير البيانات
+    const exportData = useCallback(async () => {
+      const data = {
+        ramadan: ramadanData,
+        today: todayProgress,
+        exportDate: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ramadan-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    }, [ramadanData, todayProgress]);
+
+      // استيراد البيانات
+  const importData = useCallback(async (file) => {
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      if (data.ramadan && data.today) {
+        setRamadanData(data.ramadan);
+        setTodayProgress(data.today);
+        await saveData(storageKey, data.ramadan);
+        await saveData(todayKey, data.today);
+        alert('✅ تم استيراد البيانات بنجاح');
+      } else {
+        alert('❌ ملف غير صالح');
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      alert('❌ فشل استيراد البيانات');
+    }
+  }, []);
+
+  
   // تحديث إعدادات التذكير
   const updateReminders = (reminders) => {
     setRamadanData(prev => ({
@@ -293,6 +378,14 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
   const progress = calculateOverallProgress();
   const remainingDays = getRemainingDays();
 
+  if (loading) {
+    return (
+      <div className="ramadan-loading">
+        <div className="spinner"></div>
+        <p>جاري تحميل بيانات رمضان...</p>
+      </div>
+    );
+  }
   if (!showTracker) {
     return (
       <button 
@@ -308,7 +401,6 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
       </button>
     );
   }
-
   return (
     <div className="ramadan-tracker-overlay" onClick={() => setShowTracker(false)}>
       <div className="ramadan-tracker" onClick={e => e.stopPropagation()}>
@@ -349,6 +441,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
           onUpdateGoal={updateDailyGoal}
           currentSurah={currentSurah}
           currentAyah={currentAyah}
+          totalPagesRead={ramadanData.totalPagesRead} // ✅ تمرير المجموع الكلي
         />
 
         {/* تقدم الأجزاء */}
@@ -363,6 +456,7 @@ const RamadanTracker = ({ currentSurah, currentAyah, userId = 'default' }) => {
           progress={progress}
           streak={ramadanData.currentStreak}
           longestStreak={ramadanData.longestStreak}
+          totalPagesRead={ramadanData.totalPagesRead} // ✅ تمرير نفس القيمة
         />
 
         {/* إعدادات التذكير */}

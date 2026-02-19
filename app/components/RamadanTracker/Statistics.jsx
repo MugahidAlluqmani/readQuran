@@ -80,7 +80,7 @@ const Statistics = ({ readingHistory, progress, streak, longestStreak }) => {
       </div>
 
       <div className="prediction">
-        <h4>🔮 توقع الختمة القادمة</h4>
+        <h4>💡 توقع الختمة القادمة</h4>
         {averageDaily > 0 ? (
           <div className="prediction-info">
             <p>

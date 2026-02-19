@@ -8,7 +8,8 @@ const DailyProgress = ({
   onReset,
   onUpdateGoal,
   currentSurah,
-  currentAyah 
+  currentAyah,
+  totalPagesRead,
 }) => {
   const [pagesToAdd, setPagesToAdd] = useState(1);
   const [showGoalInput, setShowGoalInput] = useState(false);
@@ -25,9 +26,14 @@ const DailyProgress = ({
     onAddReading(20, juzNumber);
   };
 
-  const progressPercent = (todayProgress.pages / dailyGoal) * 100;
+// ✅ استخدام todayProgress.pages للتقدم اليومي
+const todayPages = todayProgress?.pages || 0;
+const progressPercent = (todayPages / dailyGoal) * 100;
 
-  return (
+  // التأكد من أن النسبة لا تتجاوز 100%
+  const clampedProgress = Math.min(progressPercent, 100);
+  
+return (
     <div className="daily-progress">
       <div className="section-header">
         <h3>📖 تقدم اليوم</h3>
@@ -44,15 +50,15 @@ const DailyProgress = ({
               cy="50" 
               r="45" 
               strokeDasharray={`${2 * Math.PI * 45}`}
-              strokeDashoffset={`${2 * Math.PI * 45 * (1 - progressPercent / 100)}`}
+              strokeDashoffset={`${2 * Math.PI * 45 * (1 - clampedProgress / 100)}`}
             />
             <text x="50" y="50" textAnchor="middle" dominantBaseline="middle">
-              {Math.round(progressPercent)}%
+              {Math.round(clampedProgress)}%
             </text>
           </svg>
         </div>
         <div className="progress-stats">
-          <span className="pages-read">{todayProgress.pages} / {dailyGoal}</span>
+          <span className="pages-read">{totalPagesRead} / {dailyGoal}</span>
           <span className="pages-label">صفحة</span>
         </div>
       </div>

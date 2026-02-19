@@ -25,6 +25,8 @@ export default function SurahPage() {
   const [loading, setLoading] = useState(true);
   const [surahInfo, setSurahInfo] = useState();
   const [surahList, setSurahList] = useState([]);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+
   const [filteredAyahs, setFilteredAyahs] = useState([]);
   const fromAyah = searchParams.get('from');
   const toAyah = searchParams.get('to');
@@ -490,12 +492,23 @@ export default function SurahPage() {
           </button>
           
           <button 
+            style={{display : 'none'}}
             className={`toolbar-btn translation-btn ${showTranslation ? 'active' : ''}`}
             onClick={toggleTranslation}
             title={showTranslation ? 'إخفاء الترجمة' : 'إظهار الترجمة'}
           >
             🌐
           </button>
+
+          <button 
+            className="toolbar-btn info-btn"
+            onClick={() => setShowInfoModal(true)}
+            title="معلومات عن المصادر"
+            aria-label="معلومات عن المصادر"
+          >
+            ℹ️
+          </button>
+          
         </div>
       </div>
 
@@ -517,6 +530,65 @@ export default function SurahPage() {
           onBack={goToHome}
           tafsirData={tafsirData}
         />
+
+        {/* ✅ مودال المعلومات */}
+        {showInfoModal && (
+          <div className="info-modal-overlay" onClick={() => setShowInfoModal(false)}>
+            <div className="info-modal" onClick={e => e.stopPropagation()}>
+              <button className="info-close-btn" onClick={() => setShowInfoModal(false)}>✕</button>
+              
+              <div className="info-header">
+                <div className="info-icon">📖</div>
+                <h2>مصادر البيانات</h2>
+              </div>
+              
+              <div className="info-content">
+                <div className="info-section">
+                  <h3>📚 المصحف الشريف</h3>
+                  <p>
+                    تم الحصول على بيانات المصحف الشريف (نص القرآن الكريم) من 
+                    <strong> مجمع الملك فهد لطباعة المصحف الشريف</strong>.
+                  </p>
+                  <a 
+                    href="https://qurancomplex.gov.sa/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="info-link"
+                  >
+                    زيارة موقع مجمع الملك فهد  ←
+                  </a>
+                </div>
+
+                <div className="info-section">
+                  <h3>📝 التفسير المعاصر</h3>
+                  <p>
+                    بيانات التفسير مأخوذة من 
+                    <strong> تفسير معاصر - الشيخ صالح بن عبدالله بن حميد</strong>.
+                  </p>
+                </div>
+
+                <div className="info-section thanks-section">
+                  <h3>🤝 كلمة شكر</h3>
+                  <p>
+                    نتقدم بجزيل الشكر والعرفان إلى 
+                    <strong>  مجمع الملك فهد لطباعة المصحف الشريف </strong> 
+                    على إتاحة هذه البيانات القيمة لتطوير التطبيقات الإسلامية، 
+                    سائلين المولى عز وجل أن يجعل هذا العمل في ميزان حسناتهم.
+                  </p>
+                  <p className="dua">
+                    اللهم اجعل هذا العمل خالصاً لوجهك الكريم، وانفع به المسلمين.
+                  </p>
+                </div>
+
+                <div className="info-footer">
+                  <p className="copyright">
+                    جميع الحقوق محفوظة لأصحابها 🤲
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
 
